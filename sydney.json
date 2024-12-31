@@ -10,28 +10,28 @@
         {
             "date": "June 20",
             "activities": [
-                {"time": "9:00 AM", "activity": "Sydney Opera House Tour"},
+                {"time": "9:00 AM", "activity": "Sydney Opera House Tour", "emoji": "✅"},
                 {"time": "3:00 PM", "activity": "Visit Bondi Beach"}
             ]
         },
         {
             "date": "June 21",
             "activities": [
-                {"time": "8:00 AM", "activity": "Blue Mountains Day Trip"}
+                {"time": "8:00 AM", "activity": "Blue Mountains Day Trip", "emoji": "✅"}
             ]
         },
         {
             "date": "June 22",
             "activities": [
                 {"time": "10:00 AM", "activity": "Taronga Zoo Visit"},
-                {"time": "4:00 PM", "activity": "Sunset at Darling Harbour"}
+                {"time": "4:00 PM", "activity": "Sunset at Darling Harbour", "emoji": "✅"}
             ]
         },
         {
             "date": "June 23",
             "activities": [
                 {"time": "9:00 AM", "activity": "Morning Shopping"},
-                {"time": "1:00 PM", "activity": "Flight to Cairns"}
+                {"time": "1:00 PM", "activity": "Flight to Cairns", "emoji": "✅"}
             ]
         }
     ]
