@@ -20,10 +20,20 @@
             text-align: center;
             cursor: pointer;
             border-bottom: 2px solid transparent;
+            color: black;
         }
         .tab.active {
             border-bottom: 2px solid #007BFF;
             font-weight: bold;
+        }
+        .tab[data-tab="auckland"] {
+            background-color: lightblue;
+        }
+        .tab[data-tab="sydney"] {
+            background-color: lightgreen;
+        }
+        .tab[data-tab="cairns"] {
+            background-color: lighttan;
         }
         .content {
             display: none;
@@ -50,20 +60,14 @@
 <body>
 
 <div class="tabs">
-    <div class="tab" data-tab="auckland">Auckland</div>
-    <div class="tab" data-tab="sydney">Sydney</div>
-    <div class="tab" data-tab="cairns">Cairns</div>
+    <div class="tab" data-tab="auckland">🇳🇿 Auckland</div>
+    <div class="tab" data-tab="sydney">🇦🇺 Sydney</div>
+    <div class="tab" data-tab="cairns">🌊 Cairns</div>
 </div>
 
-<div class="content" id="auckland">
-    <div class="header" id="auckland-header"></div>
-</div>
-<div class="content" id="sydney">
-    <div class="header" id="sydney-header"></div>
-</div>
-<div class="content" id="cairns">
-    <div class="header" id="cairns-header"></div>
-</div>
+<div class="content" id="auckland"></div>
+<div class="content" id="sydney"></div>
+<div class="content" id="cairns"></div>
 
 <script>
     // Load JSON data
@@ -72,8 +76,12 @@
         const data = await response.json();
         const container = document.getElementById(location.toLowerCase());
 
-        const header = document.getElementById(`${location.toLowerCase()}-header`);
-        header.style.backgroundImage = `url(${data.headerImage})`;
+        if (data.headerImage) {
+            const header = document.createElement('div');
+            header.classList.add('header');
+            header.style.backgroundImage = `url(${data.headerImage})`;
+            container.appendChild(header);
+        }
 
         data.days.forEach(day => {
             const dayDiv = document.createElement('div');
@@ -86,7 +94,8 @@
             day.activities.forEach(act => {
                 const actDiv = document.createElement('div');
                 actDiv.classList.add('activity');
-                actDiv.textContent = `${act.time} - ${act.activity}`;
+                const emoji = act.emoji ? `${act.emoji} ` : '';
+                actDiv.textContent = `${emoji}${act.time} - ${act.activity}`;
                 dayDiv.appendChild(actDiv);
             });
 
