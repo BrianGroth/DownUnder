@@ -1,0 +1,40 @@
+{
+    "headerImage": "auckland-image.jpeg",
+    "days": [
+        {
+            "date": "June 15",
+            "activities": [
+                {"time": "10:00 AM", "activity": "Visit Sky Tower"},
+                {"time": "2:00 PM", "activity": "Auckland Art Gallery"}
+            ]
+        },
+        {
+            "date": "June 16",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Waiheke Island Tour"},
+                {"time": "1:00 PM", "activity": "Wine Tasting"}
+            ]
+        },
+        {
+            "date": "June 17",
+            "activities": [
+                {"time": "10:00 AM", "activity": "Auckland Zoo"},
+                {"time": "3:00 PM", "activity": "Waitematā Harbour Cruise"}
+            ]
+        },
+        {
+            "date": "June 18",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Hobbiton Movie Set Tour"},
+                {"time": "5:00 PM", "activity": "Dinner at Viaduct Harbour"}
+            ]
+        },
+        {
+            "date": "June 19",
+            "activities": [
+                {"time": "8:00 AM", "activity": "Morning City Walk"},
+                {"time": "12:00 PM", "activity": "Flight to Sydney"}
+            ]
+        }
+    ]
+}
