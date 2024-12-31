@@ -38,6 +38,13 @@
         .activity {
             margin-left: 20px;
         }
+        .header {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -48,49 +55,43 @@
     <div class="tab" data-tab="cairns">Cairns</div>
 </div>
 
-<div class="content" id="auckland"></div>
-<div class="content" id="sydney"></div>
-<div class="content" id="cairns"></div>
+<div class="content" id="auckland">
+    <div class="header" id="auckland-header"></div>
+</div>
+<div class="content" id="sydney">
+    <div class="header" id="sydney-header"></div>
+</div>
+<div class="content" id="cairns">
+    <div class="header" id="cairns-header"></div>
+</div>
 
 <script>
-    // Sample JSON data
-    const travelData = {
-        "Auckland": [
-            {"date": "June 15", "activities": [{"time": "10:00 AM", "activity": "Visit Sky Tower"}, {"time": "2:00 PM", "activity": "Auckland Art Gallery"}]},
-            {"date": "June 16", "activities": [{"time": "9:00 AM", "activity": "Waiheke Island Tour"}, {"time": "1:00 PM", "activity": "Wine Tasting"}]}
-        ],
-        "Sydney": [
-            {"date": "June 20", "activities": [{"time": "9:00 AM", "activity": "Sydney Opera House"}, {"time": "3:00 PM", "activity": "Bondi Beach"}]},
-            {"date": "June 21", "activities": [{"time": "8:00 AM", "activity": "Blue Mountains Tour"}]}
-        ],
-        "Cairns": [
-            {"date": "June 24", "activities": [{"time": "8:00 AM", "activity": "Great Barrier Reef"}, {"time": "6:00 PM", "activity": "Dinner by the Beach"}]},
-            {"date": "June 25", "activities": [{"time": "10:00 AM", "activity": "Rainforest Walk"}]}
-        ]
-    };
+    // Load JSON data
+    async function loadData(location) {
+        const response = await fetch(`${location.toLowerCase()}.json`);
+        const data = await response.json();
+        const container = document.getElementById(location.toLowerCase());
 
-    // Function to render content
-    function renderContent() {
-        for (const location in travelData) {
-            const container = document.getElementById(location.toLowerCase());
-            travelData[location].forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
+        const header = document.getElementById(`${location.toLowerCase()}-header`);
+        header.style.backgroundImage = `url(${data.headerImage})`;
 
-                const dateHeading = document.createElement('h3');
-                dateHeading.textContent = day.date;
-                dayDiv.appendChild(dateHeading);
+        data.days.forEach(day => {
+            const dayDiv = document.createElement('div');
+            dayDiv.classList.add('day');
 
-                day.activities.forEach(act => {
-                    const actDiv = document.createElement('div');
-                    actDiv.classList.add('activity');
-                    actDiv.textContent = `${act.time} - ${act.activity}`;
-                    dayDiv.appendChild(actDiv);
-                });
+            const dateHeading = document.createElement('h3');
+            dateHeading.textContent = day.date;
+            dayDiv.appendChild(dateHeading);
 
-                container.appendChild(dayDiv);
+            day.activities.forEach(act => {
+                const actDiv = document.createElement('div');
+                actDiv.classList.add('activity');
+                actDiv.textContent = `${act.time} - ${act.activity}`;
+                dayDiv.appendChild(actDiv);
             });
-        }
+
+            container.appendChild(dayDiv);
+        });
     }
 
     // Tab functionality
@@ -103,13 +104,16 @@
             contents.forEach(c => c.classList.remove('active'));
 
             tab.classList.add('active');
-            document.getElementById(tab.dataset.tab).classList.add('active');
+            const content = document.getElementById(tab.dataset.tab);
+            content.classList.add('active');
+
+            // Load data for the active tab
+            loadData(tab.dataset.tab);
         });
     });
 
     // Initialize
     tabs[0].click();
-    renderContent();
 </script>
 </body>
 </html>
