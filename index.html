@@ -46,14 +46,13 @@
             margin-bottom: 20px;
         }
         .activity {
+            display: flex;
+            align-items: center;
             margin-left: 20px;
         }
-        .header {
-            width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            margin-bottom: 20px;
+        .activity span {
+            display: inline-block;
+            width: 2em; /* Align with emoji size */
         }
     </style>
 </head>
@@ -76,13 +75,6 @@
         const data = await response.json();
         const container = document.getElementById(location.toLowerCase());
 
-        if (data.headerImage) {
-            const header = document.createElement('div');
-            header.classList.add('header');
-            header.style.backgroundImage = `url(${data.headerImage})`;
-            container.appendChild(header);
-        }
-
         data.days.forEach(day => {
             const dayDiv = document.createElement('div');
             dayDiv.classList.add('day');
@@ -94,8 +86,8 @@
             day.activities.forEach(act => {
                 const actDiv = document.createElement('div');
                 actDiv.classList.add('activity');
-                const emoji = act.emoji ? `${act.emoji} ` : '';
-                actDiv.textContent = `${emoji}${act.time} - ${act.activity}`;
+                const emoji = act.emoji ? `${act.emoji}` : '';
+                actDiv.innerHTML = `<span>${emoji}</span>${act.time} - ${act.activity}`;
                 dayDiv.appendChild(actDiv);
             });
 
