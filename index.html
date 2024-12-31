@@ -69,8 +69,12 @@
 <div class="content" id="cairns"></div>
 
 <script>
+    const loadedTabs = {};
+
     // Load JSON data
     async function loadData(location) {
+        if (loadedTabs[location]) return; // Prevent duplicate loads
+
         const response = await fetch(`${location.toLowerCase()}.json`);
         const data = await response.json();
         const container = document.getElementById(location.toLowerCase());
@@ -93,6 +97,8 @@
 
             container.appendChild(dayDiv);
         });
+
+        loadedTabs[location] = true; // Mark this tab as loaded
     }
 
     // Tab functionality
