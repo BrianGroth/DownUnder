@@ -1,0 +1,46 @@
+{
+    "headerImage": "cairns-image.jpeg",
+    "days": [
+        {
+            "date": "June 23",
+            "activities": [
+                {"time": "5:00 PM", "activity": "Welcome Dinner by the Beach"}
+            ]
+        },
+        {
+            "date": "June 24",
+            "activities": [
+                {"time": "8:00 AM", "activity": "Great Barrier Reef Snorkeling"},
+                {"time": "6:00 PM", "activity": "Dinner by the Esplanade"}
+            ]
+        },
+        {
+            "date": "June 25",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Kuranda Scenic Railway"},
+                {"time": "2:00 PM", "activity": "Rainforest Walk"}
+            ]
+        },
+        {
+            "date": "June 26",
+            "activities": [
+                {"time": "10:00 AM", "activity": "Explore Atherton Tablelands"},
+                {"time": "3:00 PM", "activity": "Relax at Palm Cove"}
+            ]
+        },
+        {
+            "date": "June 27",
+            "activities": [
+                {"time": "7:00 AM", "activity": "Hot Air Balloon Ride"},
+                {"time": "4:00 PM", "activity": "Farewell Dinner"}
+            ]
+        },
+        {
+            "date": "June 28",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Pack and Morning Coffee"},
+                {"time": "12:00 PM", "activity": "Flight Home"}
+            ]
+        }
+    ]
+}
