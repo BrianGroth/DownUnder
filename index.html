@@ -7,6 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 1.2em; /* Increase font size */
             margin: 0;
             padding: 0;
         }
@@ -21,19 +22,12 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
             color: black;
+            background-color: lightgray;
         }
         .tab.active {
             border-bottom: 2px solid #007BFF;
             font-weight: bold;
-        }
-        .tab[data-tab="auckland"] {
-            background-color: lightblue;
-        }
-        .tab[data-tab="sydney"] {
-            background-color: lightgreen;
-        }
-        .tab[data-tab="cairns"] {
-            background-color: lighttan;
+            background-color: white;
         }
         .content {
             display: none;
@@ -45,23 +39,18 @@
         .day {
             margin-bottom: 20px;
         }
-        .activity {
-            display: flex;
-            align-items: center;
-            margin-left: 20px;
-        }
-        .activity span {
-            display: inline-block;
-            width: 2em; /* Align with emoji size */
+        .activities {
+            list-style-type: disc; /* Bullet points */
+            margin-left: 40px;
         }
     </style>
 </head>
 <body>
 
 <div class="tabs">
-    <div class="tab" data-tab="auckland">🇳🇿 Auckland</div>
-    <div class="tab" data-tab="sydney">🇦🇺 Sydney</div>
-    <div class="tab" data-tab="cairns">🌊 Cairns</div>
+    <div class="tab" data-tab="auckland">Auckland</div>
+    <div class="tab" data-tab="sydney">Sydney</div>
+    <div class="tab" data-tab="cairns">Cairns</div>
 </div>
 
 <div class="content" id="auckland"></div>
@@ -87,14 +76,16 @@
             dateHeading.textContent = day.date;
             dayDiv.appendChild(dateHeading);
 
+            const activityList = document.createElement('ul');
+            activityList.classList.add('activities');
+
             day.activities.forEach(act => {
-                const actDiv = document.createElement('div');
-                actDiv.classList.add('activity');
-                const emoji = act.emoji ? `${act.emoji}` : '';
-                actDiv.innerHTML = `<span>${emoji}</span>${act.time} - ${act.activity}`;
-                dayDiv.appendChild(actDiv);
+                const listItem = document.createElement('li');
+                listItem.textContent = `${act.time} - ${act.activity}`;
+                activityList.appendChild(listItem);
             });
 
+            dayDiv.appendChild(activityList);
             container.appendChild(dayDiv);
         });
 
