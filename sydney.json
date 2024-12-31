@@ -1,0 +1,38 @@
+{
+    "headerImage": "sydney-image.jpeg",
+    "days": [
+        {
+            "date": "June 19",
+            "activities": [
+                {"time": "6:00 PM", "activity": "Dinner at Sydney Harbour"}
+            ]
+        },
+        {
+            "date": "June 20",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Sydney Opera House Tour"},
+                {"time": "3:00 PM", "activity": "Visit Bondi Beach"}
+            ]
+        },
+        {
+            "date": "June 21",
+            "activities": [
+                {"time": "8:00 AM", "activity": "Blue Mountains Day Trip"}
+            ]
+        },
+        {
+            "date": "June 22",
+            "activities": [
+                {"time": "10:00 AM", "activity": "Taronga Zoo Visit"},
+                {"time": "4:00 PM", "activity": "Sunset at Darling Harbour"}
+            ]
+        },
+        {
+            "date": "June 23",
+            "activities": [
+                {"time": "9:00 AM", "activity": "Morning Shopping"},
+                {"time": "1:00 PM", "activity": "Flight to Cairns"}
+            ]
+        }
+    ]
+}
