@@ -2,36 +2,40 @@
     "headerImage": "sydney-image.jpeg",
     "days": [
         {
-            "date": "June 19",
+            "date": "Thursday, June 19",
             "activities": [
-                {"time": "6:00 PM", "activity": "Dinner at Sydney Harbour"}
+                { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) to Sydney", "type": "flight" },
+                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" },
+                { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
             ]
         },
         {
-            "date": "June 20",
+            "date": "Friday, June 20",
             "activities": [
-                {"time": "9:00 AM", "activity": "Sydney Opera House Tour", "emoji": "✅"},
-                {"time": "3:00 PM", "activity": "Visit Bondi Beach"}
+                {"time": "Morning", "activity": "4-hour walking tour (Jewish in Sydney)", "type": "adventure" },
+                { "time": "Afternoon", "activity": "Fish Market for Lunch", "type": "meal" }
             ]
         },
         {
-            "date": "June 21",
+            "date": "Saturday, June 21",
             "activities": [
-                {"time": "8:00 AM", "activity": "Blue Mountains Day Trip", "emoji": "✅"}
+                {"time": "8:00 AM", "activity": "All-day Tour (Blue Mountains, Waterfalls, Scenic World, Featherdale Wildlife)", "type": "adventure" },
+                {"time": "Evening", "activity": "Sydney Opera", "type": "adventure" }
             ]
         },
         {
-            "date": "June 22",
+            "date": "Sunday, June 22",
             "activities": [
-                {"time": "10:00 AM", "activity": "Taronga Zoo Visit"},
-                {"time": "4:00 PM", "activity": "Sunset at Darling Harbour", "emoji": "✅"}
+                {"time": "8:00 AM", "activity": "Visit Taronga Zoo (walk through Botanical garden to Circular Quay ferry)", "type": "adventure" },
+                { "time": "Evening", "activity": "Free evening", "type": "meal" }
             ]
         },
         {
-            "date": "June 23",
+            "date": "Monday, June 23",
             "activities": [
-                {"time": "9:00 AM", "activity": "Morning Shopping"},
-                {"time": "1:00 PM", "activity": "Flight to Cairns", "emoji": "✅"}
+                { "time": "9:45 AM", "activity": "Quantas (QF922) to Cairns", "type": "flight" },
+                { "time": "12:00 PM", "activity": "Check in at Shangri-La The Marina", "type": "hotel" },
+                { "time": "Evening", "activity": "Dinner", "type": "meal" }
             ]
         }
     ]
