@@ -2,39 +2,34 @@
     "headerImage": "auckland-image.jpeg",
     "days": [
         {
-            "date": "June 15",
+            "date": "Sunday, June 15",
             "activities": [
-                {"time": "10:00 AM", "activity": "Visit Sky Tower", "emoji": "✅"},
-                {"time": "2:00 PM", "activity": "Auckland Art Gallery"}
+                {"time": "Morning in Auckland", "activity": "Arrive",},
+                {"time": "3:00 PM", "hotel": "Check in at InterContinental Auckland"}
+                {"time": "? PM", "meal": "Dinner; location is TBD"}
             ]
         },
         {
-            "date": "June 16",
+            "date": "Monday, June 16",
             "activities": [
-                {"time": "9:00 AM", "activity": "Waiheke Island Tour", "emoji": "✅"},
-                {"time": "1:00 PM", "activity": "Wine Tasting"}
+                {"time": "All Day", "activity": "Flexible"},
+                {"time": "12:00 PM", "meal": "Fish Market for Lunch"}
             ]
         },
         {
-            "date": "June 17",
+            "date": "Tuesday & Wednesday, June 17 & 18",
             "activities": [
-                {"time": "10:00 AM", "activity": "Auckland Zoo"},
-                {"time": "3:00 PM", "activity": "Waitematā Harbour Cruise", "emoji": "✅"}
+                {"time": "9:00 AM", "activity": "2-Day Tour to Rotorura, Glow Worm Caves & Hobiton"},
+                {"time": "7:00 PM", "hotel": "Tuesday: Pullman Rotorua"}                
+                {"time": "7:00 PM", "hotel": "Wednesday: Pullman Auckland Airport"}                
             ]
         },
         {
-            "date": "June 18",
+            "date": "Thursday, June 19",
             "activities": [
-                {"time": "9:00 AM", "activity": "Hobbiton Movie Set Tour", "emoji": "✅"},
-                {"time": "5:00 PM", "activity": "Dinner at Viaduct Harbour"}
+                {"time": "9:00 AM", "flight": "Air Newzealand (NZ103) AKL-SYD"},
+                {"time": "12:00 PM", "hotel": "Check in at Ovolo Woolloomooloo"}
             ]
         },
-        {
-            "date": "June 19",
-            "activities": [
-                {"time": "8:00 AM", "activity": "Morning City Walk"},
-                {"time": "12:00 PM", "activity": "Flight to Sydney", "emoji": "✅"}
-            ]
-        }
     ]
 }
