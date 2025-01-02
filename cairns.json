@@ -2,44 +2,44 @@
     "headerImage": "cairns-image.jpeg",
     "days": [
         {
-            "date": "June 23",
+            "date": "Monday, June 23",
             "activities": [
-                {"time": "5:00 PM", "activity": "Welcome Dinner by the Beach", "emoji": "✅"}
+                { "time": "9:45 AM", "activity": "Quantas (QF922) to Cairns", "type": "flight" },
+                { "time": "12:00 PM", "activity": "Check in at Shangri-La The Marina", "type": "hotel" },
+                { "time": "Evening", "activity": "Dinner", "type": "meal" }
+            ]
+        }.
+        {
+            "date": "Tuesday, June 24",
+            "activities": [
+                {"time": "Morning", "activity": "Flex time"},
+                {"time": "12:00 PM", "activity": "1/2 Day Tour (Harley's Crocs)", "type": "adventure"}
             ]
         },
         {
-            "date": "June 24",
+            "date": "Wednesday, June 25",
             "activities": [
-                {"time": "8:00 AM", "activity": "Great Barrier Reef Snorkeling", "emoji": "✅"},
-                {"time": "6:00 PM", "activity": "Dinner by the Esplanade"}
+                {"time": "8:00 AM", "activity": "All-day Tour (Great Barrier Reef - Green Island)", "type": "adventure" }
             ]
         },
         {
-            "date": "June 25",
+            "date": "Thursday, June 26",
             "activities": [
-                {"time": "9:00 AM", "activity": "Kuranda Scenic Railway", "emoji": "✅"},
-                {"time": "2:00 PM", "activity": "Rainforest Walk"}
+                {"time": "10:00 AM", "activity": "Brunch" "type": "meal" },
+                {"time": "Afternoon", "activity": "Flex time"}
             ]
         },
         {
-            "date": "June 26",
+            "date": "Friday, June 27",
             "activities": [
-                {"time": "10:00 AM", "activity": "Explore Atherton Tablelands"},
-                {"time": "3:00 PM", "activity": "Relax at Palm Cove", "emoji": "✅"}
+                {"time": "8:00 AM", "activity": "Visit Kuranda", "type": "adventure" }
+                {"time": "6:00 PM", "activity": "Dinner" "type": "meal" }
             ]
         },
         {
-            "date": "June 27",
+            "date": "Saturday, June 28",
             "activities": [
-                {"time": "7:00 AM", "activity": "Hot Air Balloon Ride", "emoji": "✅"},
-                {"time": "4:00 PM", "activity": "Farewell Dinner"}
-            ]
-        },
-        {
-            "date": "June 28",
-            "activities": [
-                {"time": "9:00 AM", "activity": "Pack and Morning Coffee"},
-                {"time": "12:00 PM", "activity": "Flight Home", "emoji": "✅"}
+                {"time": "9:00 AM", "activity": "not sure"}
             ]
         }
     ]
