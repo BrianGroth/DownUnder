@@ -25,7 +25,7 @@
         {
             "date": "Thursday, June 26",
             "activities": [
-                {"time": "10:00 AM", "activity": "Brunch" "type": "meal" },
+                {"time": "10:00 AM", "activity": "Brunch", "type": "meal" },
                 {"time": "Afternoon", "activity": "Flex time"}
             ]
         },
@@ -33,7 +33,7 @@
             "date": "Friday, June 27",
             "activities": [
                 {"time": "8:00 AM", "activity": "Visit Kuranda", "type": "adventure" },
-                {"time": "6:00 PM", "activity": "Dinner" "type": "meal" }
+                {"time": "6:00 PM", "activity": "Dinner", "type": "meal" }
             ]
         },
         {
