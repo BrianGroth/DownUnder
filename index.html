@@ -81,7 +81,19 @@
 
             day.activities.forEach(act => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${act.time} - ${act.activity}`;
+                let description = `${act.time}`;
+
+                if (act.type === "hotel") {
+                    description += ` - 🏨 ${act.activity}`;
+                } else if (act.type === "meal") {
+                    description += ` - 🍴 ${act.activity}`;
+                } else if (act.type === "flight") {
+                    description += ` - ✈️ ${act.activity}`;
+                } else {
+                    description += ` - ${act.activity}`;
+                }
+
+                listItem.textContent = description;
                 activityList.appendChild(listItem);
             });
 
