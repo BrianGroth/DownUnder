@@ -28,7 +28,7 @@
             "date": "Thursday, June 19",
             "activities": [
                 { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) AKL-SYD", "type": "flight" },
-                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" }
+                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" },
                 { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
             ]
         }
