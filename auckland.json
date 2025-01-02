@@ -4,32 +4,32 @@
         {
             "date": "Sunday, June 15",
             "activities": [
-                {"time": "Morning in Auckland", "activity": "Arrive",},
-                {"time": "3:00 PM", "hotel": "Check in at InterContinental Auckland"}
-                {"time": "? PM", "meal": "Dinner; location is TBD"}
+                { "time": "Morning", "activity": "Arrive", "type": "activity" },
+                { "time": "3:00 PM", "activity": "Check in at InterContinental Auckland", "type": "hotel" },
+                { "time": "? PM", "activity": "Dinner; location is TBD", "type": "meal" }
             ]
         },
         {
             "date": "Monday, June 16",
             "activities": [
-                {"time": "All Day", "activity": "Flexible"},
-                {"time": "12:00 PM", "meal": "Fish Market for Lunch"}
+                { "time": "All Day", "activity": "Flexible", "type": "activity" },
+                { "time": "12:00 PM", "activity": "Fish Market for Lunch", "type": "meal" }
             ]
         },
         {
             "date": "Tuesday & Wednesday, June 17 & 18",
             "activities": [
-                {"time": "9:00 AM", "activity": "2-Day Tour to Rotorura, Glow Worm Caves & Hobiton"},
-                {"time": "7:00 PM", "hotel": "Tuesday: Pullman Rotorua"}                
-                {"time": "7:00 PM", "hotel": "Wednesday: Pullman Auckland Airport"}                
+                { "time": "9:00 AM", "activity": "2-Day Tour to Rotorua, Glow Worm Caves & Hobbiton", "type": "activity" },
+                { "time": "7:00 PM", "activity": "Tuesday: Pullman Rotorua", "type": "hotel" },
+                { "time": "7:00 PM", "activity": "Wednesday: Pullman Auckland Airport", "type": "hotel" }
             ]
         },
         {
             "date": "Thursday, June 19",
             "activities": [
-                {"time": "9:00 AM", "flight": "Air Newzealand (NZ103) AKL-SYD"},
-                {"time": "12:00 PM", "hotel": "Check in at Ovolo Woolloomooloo"}
+                { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) AKL-SYD", "type": "flight" },
+                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" }
             ]
-        },
+        }
     ]
 }
