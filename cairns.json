@@ -8,7 +8,7 @@
                 { "time": "12:00 PM", "activity": "Check in at Shangri-La The Marina", "type": "hotel" },
                 { "time": "Evening", "activity": "Dinner", "type": "meal" }
             ]
-        }.
+        },
         {
             "date": "Tuesday, June 24",
             "activities": [
