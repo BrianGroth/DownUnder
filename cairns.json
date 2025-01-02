@@ -12,34 +12,34 @@
         {
             "date": "Tuesday, June 24",
             "activities": [
-                {"time": "Morning", "activity": "Flex time"},
-                {"time": "12:00 PM", "activity": "1/2 Day Tour (Harley's Crocs)", "type": "adventure"}
+                { "time": "Morning", "activity": "Flex time", "type": "adventure" },
+                { "time": "12:00 PM", "activity": "1/2 Day Tour (Harley's Crocs)", "type": "adventure" }
             ]
         },
         {
             "date": "Wednesday, June 25",
             "activities": [
-                {"time": "8:00 AM", "activity": "All-day Tour (Great Barrier Reef - Green Island)", "type": "adventure" }
+                { "time": "8:00 AM", "activity": "All-day Tour (Great Barrier Reef - Green Island)", "type": "adventure" }
             ]
         },
         {
             "date": "Thursday, June 26",
             "activities": [
-                {"time": "10:00 AM", "activity": "Brunch", "type": "meal" },
-                {"time": "Afternoon", "activity": "Flex time"}
+                { "time": "10:00 AM", "activity": "Brunch", "type": "meal" },
+                { "time": "Afternoon", "activity": "Flex time", "type": "adventure" }
             ]
         },
         {
             "date": "Friday, June 27",
             "activities": [
-                {"time": "8:00 AM", "activity": "Visit Kuranda", "type": "adventure" },
-                {"time": "6:00 PM", "activity": "Dinner", "type": "meal" }
+                { "time": "8:00 AM", "activity": "Visit Kuranda", "type": "adventure" },
+                { "time": "6:00 PM", "activity": "Dinner", "type": "meal" }
             ]
         },
         {
             "date": "Saturday, June 28",
             "activities": [
-                {"time": "9:00 AM", "activity": "not sure", "type": "adventure"}
+                { "time": "9:00 AM", "activity": "not sure", "type": "adventure" }
             ]
         }
     ]
