@@ -39,7 +39,7 @@
         {
             "date": "Saturday, June 28",
             "activities": [
-                {"time": "9:00 AM", "activity": "not sure"}
+                {"time": "9:00 AM", "activity": "not sure", "type": "adventure"}
             ]
         }
     ]
