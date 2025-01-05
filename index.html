@@ -1,108 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Bingo</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px;
-            font-size: 2em;
-        }
-
-        #game-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 10px;
-            width: 90%;
-            max-width: 400px;
-            margin: 20px 0;
-        }
-
-        .grid-item {
-            border: 2px dashed #ccc;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1/1;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .grid-item img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-
-        .save-button {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: none;
-            z-index: 1;
-        }
-
-        .win-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            position: fixed;
-            z-index: 2;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            justify-content: center;
-            pointer-events: none;
-        }
-
-        .win-message {
-            font-size: 6vw;
-            color: gold;
-            text-shadow: 2px 2px 4px #000000;
-            animation: pulse 1.5s infinite alternate;
-            text-align: center;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #eee;
-            width: 100%;
-        }
-    </style>
-</head>
+    </head>
 <body>
     <div class="win-container" id="win-container">
         <div class="win-message">You Win!</div>
@@ -122,66 +21,73 @@
 
                 const grid = document.getElementById('game-grid');
                 let words = gameData.words;
-                let selectedWords = [];
 
-                for (let i = 0; i < 4; i++) {
-                    const randomIndex = Math.floor(Math.random() * words.length);
-                    selectedWords.push(words.splice(randomIndex, 1)[0]);
-                }
+                // Function to start a new game
+                function startGame() {
+                    grid.innerHTML = ''; // Clear previous grid
+                    document.getElementById('win-container').style.display = 'none'; // Hide win message
+                    let selectedWords = [];
+                    let imagesLoaded = 0; // Reset imagesLoaded *inside* startGame
 
-                let imagesLoaded = 0;
+                    for (let i = 0; i < 4; i++) {
+                        const randomIndex = Math.floor(Math.random() * words.length);
+                        selectedWords.push(words.splice(randomIndex, 1)[0]);
+                    }
+                    words = gameData.words.slice(); // Reset words for next game
 
-                selectedWords.forEach(word => {
-                    const gridItem = document.createElement('div');
-                    gridItem.classList.add('grid-item');
-                    gridItem.textContent = word;
-                    grid.appendChild(gridItem);
+                    selectedWords.forEach(word => {
+                        const gridItem = document.createElement('div');
+                        gridItem.classList.add('grid-item');
+                        gridItem.textContent = word;
+                        grid.appendChild(gridItem);
 
-                    gridItem.addEventListener('click', () => {
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = 'image/*';
-                        input.click();
+                        gridItem.addEventListener('click', () => {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = 'image/*';
+                            input.click();
 
-                        input.addEventListener('change', (event) => {
-                            const file = event.target.files[0];
-                            const reader = new FileReader();
+                            input.addEventListener('change', (event) => {
+                                const file = event.target.files[0];
+                                const reader = new FileReader();
 
-                            reader.onload = (e) => {
-                                const img = document.createElement('img');
-                                img.src = e.target.result;
-                                gridItem.innerHTML = '';
-                                gridItem.appendChild(img);
+                                reader.onload = (e) => {
+                                    const img = document.createElement('img');
+                                    img.src = e.target.result;
+                                    gridItem.innerHTML = '';
+                                    gridItem.appendChild(img);
 
-                                let saveButton = gridItem.querySelector('.save-button');
-                                if (!saveButton) {
-                                    saveButton = document.createElement('button');
-                                    saveButton.classList.add('save-button');
-                                    saveButton.textContent = "Save";
-                                    gridItem.appendChild(saveButton);
-                                    saveButton.style.display = 'block';
+                                    let saveButton = gridItem.querySelector('.save-button');
+                                    if (!saveButton) {
+                                        saveButton = document.createElement('button');
+                                        saveButton.classList.add('save-button');
+                                        saveButton.textContent = "Save";
+                                        gridItem.appendChild(saveButton);
+                                        saveButton.style.display = 'block';
 
-                                    saveButton.addEventListener('click', (event) => {
-                                        event.stopPropagation();
-                                        event.preventDefault(); // Prevent default button behavior
-                                        const link = document.createElement('a');
-                                        link.href = img.src;
-                                        link.download = word + ".png";
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-                                    });
-                                }
+                                        saveButton.addEventListener('click', (event) => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            const link = document.createElement('a');
+                                            link.href = img.src;
+                                            link.download = word + ".png";
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                        });
+                                    }
 
-                                imagesLoaded++;
-                                if (imagesLoaded === 4) {
-                                    document.getElementById('win-container').style.display = 'flex';
-                                }
-                            };
-                            reader.readAsDataURL(file);
+                                    imagesLoaded++;
+                                    if (imagesLoaded === 4) {
+                                        document.getElementById('win-container').style.display = 'flex';
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            });
                         });
                     });
-                });
+                }
+                startGame(); // Call startGame to initialize the game
             });
     </script>
 </body>
