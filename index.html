@@ -1,94 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel App: New Zealand & Australia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 1.2em; /* Increase font size */
+            margin: 0;
+            padding: 0;
+        }
+        .tabs {
+            display: flex;
+            background-color: #f0f0f0;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: black;
+            background-color: lightgray;
+        }
+        .tab.active {
+            border-bottom: 2px solid #007BFF;
+            font-weight: bold;
+            background-color: white;
+        }
+        .content {
+            display: none;
+            padding: 20px;
+        }
+        .content.active {
+            display: block;
+        }
+        .day {
+            margin-bottom: 20px;
+        }
+        .activities {
+            list-style-type: disc; /* Bullet points */
+            margin-left: 40px;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-    <div class="win-container" id="win-container">
-        <div class="win-message">You Win!</div>
-    </div>
-    <header id="game-title">
-        <h1>NZ & AUS Photo Bingo</h1>
-    </header>
-    <div id="game-grid"></div>
-    <footer id="game-footer"></footer>
 
-    <script>
-        fetch('game_data.json')
-            .then(response => response.json())
-            .then(gameData => {
-                document.getElementById('game-title').textContent = gameData.title;
-                document.getElementById('game-footer').textContent = gameData.footer;
+<div class="tabs">
+    <div class="tab" data-tab="auckland">Auckland</div>
+    <div class="tab" data-tab="sydney">Sydney</div>
+    <div class="tab" data-tab="cairns">Cairns</div>
+</div>
 
-                const grid = document.getElementById('game-grid');
-                let words = gameData.words;
+<div class="content" id="auckland"></div>
+<div class="content" id="sydney"></div>
+<div class="content" id="cairns"></div>
 
-                // Function to start a new game
-                function startGame() {
-                    grid.innerHTML = ''; // Clear previous grid
-                    document.getElementById('win-container').style.display = 'none'; // Hide win message
-                    let selectedWords = [];
-                    let imagesLoaded = 0; // Reset imagesLoaded *inside* startGame
+<script>
+    const loadedTabs = {};
 
-                    for (let i = 0; i < 4; i++) {
-                        const randomIndex = Math.floor(Math.random() * words.length);
-                        selectedWords.push(words.splice(randomIndex, 1)[0]);
-                    }
-                    words = gameData.words.slice(); // Reset words for next game
+    // Load JSON data
+    async function loadData(location) {
+        if (loadedTabs[location]) return; // Prevent duplicate loads
 
-                    selectedWords.forEach(word => {
-                        const gridItem = document.createElement('div');
-                        gridItem.classList.add('grid-item');
-                        gridItem.textContent = word;
-                        grid.appendChild(gridItem);
+        const response = await fetch(`${location.toLowerCase()}.json`);
+        const data = await response.json();
+        const container = document.getElementById(location.toLowerCase());
 
-                        gridItem.addEventListener('click', () => {
-                            const input = document.createElement('input');
-                            input.type = 'file';
-                            input.accept = 'image/*';
-                            input.click();
+        data.days.forEach(day => {
+            const dayDiv = document.createElement('div');
+            dayDiv.classList.add('day');
 
-                            input.addEventListener('change', (event) => {
-                                const file = event.target.files[0];
-                                const reader = new FileReader();
+            const dateHeading = document.createElement('h3');
+            dateHeading.textContent = day.date;
+            dayDiv.appendChild(dateHeading);
 
-                                reader.onload = (e) => {
-                                    const img = document.createElement('img');
-                                    img.src = e.target.result;
-                                    gridItem.innerHTML = '';
-                                    gridItem.appendChild(img);
+            const activityList = document.createElement('ul');
+            activityList.classList.add('activities');
 
-                                    let saveButton = gridItem.querySelector('.save-button');
-                                    if (!saveButton) {
-                                        saveButton = document.createElement('button');
-                                        saveButton.classList.add('save-button');
-                                        saveButton.textContent = "Save";
-                                        gridItem.appendChild(saveButton);
-                                        saveButton.style.display = 'block';
+            day.activities.forEach(act => {
+                const listItem = document.createElement('li');
+                let description = `${act.time}`;
 
-                                        saveButton.addEventListener('click', (event) => {
-                                            event.stopPropagation();
-                                            event.preventDefault();
-                                            const link = document.createElement('a');
-                                            link.href = img.src;
-                                            link.download = word + ".png";
-                                            document.body.appendChild(link);
-                                            link.click();
-                                            document.body.removeChild(link);
-                                        });
-                                    }
-
-                                    imagesLoaded++;
-                                    if (imagesLoaded === 4) {
-                                        document.getElementById('win-container').style.display = 'flex';
-                                    }
-                                };
-                                reader.readAsDataURL(file);
-                            });
-                        });
-                    });
+                if (act.type === "hotel") {
+                    description += ` - 🏨 ${act.activity}`;
+                } else if (act.type === "meal") {
+                    description += ` - 🍴 ${act.activity}`;
+                } else if (act.type === "flight") {
+                    description += ` - ✈️ ${act.activity}`;
+                } else if (act.type === "adventure") {
+                    description += ` - 🌏 ${act.activity}`;
+                } else {
+                    description += ` - ${act.activity}`;
                 }
-                startGame(); // Call startGame to initialize the game
+
+                listItem.textContent = description;
+                activityList.appendChild(listItem);
             });
-    </script>
+
+            dayDiv.appendChild(activityList);
+            container.appendChild(dayDiv);
+        });
+
+        loadedTabs[location] = true; // Mark this tab as loaded
+    }
+
+    // Tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            const content = document.getElementById(tab.dataset.tab);
+            content.classList.add('active');
+
+            // Load data for the active tab
+            loadData(tab.dataset.tab);
+        });
+    });
+
+    // Initialize
+    tabs[0].click();
+</script>
+
+<footer>
+    <p>Adventure Funding: Bubi</p>
+    <p>Travel Agent: Lorie</p>
+    <p>App Developer: Brian</p>
+    <p><a href="https://briangroth.github.io/4xBingo/">Also see our travel bingo app.</a></p>
+</footer>
+
 </body>
 </html>
