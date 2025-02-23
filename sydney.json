@@ -12,21 +12,21 @@
         {
             "date": "Friday, June 20",
             "activities": [
-                {"time": "Morning", "activity": "4-hour walking tour (Jewish in Sydney)", "type": "adventure" },
+                { "time": "Morning", "activity": "4-hour walking tour (Jewish in Sydney)", "type": "adventure" },
                 { "time": "Afternoon", "activity": "Fish Market for Lunch", "type": "meal" }
             ]
         },
         {
             "date": "Saturday, June 21",
             "activities": [
-                {"time": "8:00 AM", "activity": "All-day Tour (Blue Mountains, Waterfalls, Scenic World, Featherdale Wildlife)", "type": "adventure" },
-                {"time": "Evening", "activity": "Sydney Opera", "type": "adventure" }
+                { "time": "8:00 AM", "activity": "All-day Tour (Blue Mountains, Waterfalls, Scenic World, Featherdale Wildlife)", "type": "adventure" },
+                { "time": "Evening", "activity": "Sydney Opera", "type": "adventure" }
             ]
         },
         {
             "date": "Sunday, June 22",
             "activities": [
-                {"time": "8:00 AM", "activity": "Visit Taronga Zoo (walk through Botanical garden to Circular Quay ferry)", "type": "adventure" },
+                { "time": "8:00 AM", "activity": "Visit Taronga Zoo (walk through Botanical garden to Circular Quay ferry)", "type": "adventure" },
                 { "time": "Evening", "activity": "Free evening", "type": "meal" }
             ]
         },
@@ -38,5 +38,6 @@
                 { "time": "Evening", "activity": "Dinner", "type": "meal" }
             ]
         }
-    ]
+    ],
+    "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Sydney here."
 }

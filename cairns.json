@@ -42,5 +42,6 @@
                 { "time": "9:00 AM", "activity": "not sure", "type": "adventure" }
             ]
         }
-    ]
+    ],
+    "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Cairns here."
 }

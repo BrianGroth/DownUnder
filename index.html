@@ -39,10 +39,21 @@
         .day {
             margin-bottom: 20px;
         }
+        /* Updated activities list style */
         .activities {
-            list-style-type: disc; /* Bullet points */
-            margin-left: 40px;
+            list-style: none;
+            padding-left: 0;
         }
+        .activities li {
+            padding-left: 1.5em;
+            text-indent: -1.5em;
+            margin-bottom: 5px;
+        }
+        /* Pseudo-elements for activity icons */
+        .activities li.hotel::before { content: "🏨 "; }
+        .activities li.meal::before { content: "🍴 "; }
+        .activities li.flight::before { content: "✈️ "; }
+        .activities li.adventure::before { content: "🌏 "; }
         footer {
             margin-top: 20px;
             padding: 10px;
@@ -74,7 +85,7 @@
 <script>
     const loadedTabs = {};
 
-    // Load JSON data
+    // Load JSON data and render content
     async function loadData(location) {
         if (loadedTabs[location]) return; // Prevent duplicate loads
 
@@ -82,6 +93,7 @@
         const data = await response.json();
         const container = document.getElementById(location.toLowerCase());
 
+        // Render each day with activities
         data.days.forEach(day => {
             const dayDiv = document.createElement('div');
             dayDiv.classList.add('day');
@@ -95,27 +107,27 @@
 
             day.activities.forEach(act => {
                 const listItem = document.createElement('li');
-                let description = `${act.time}`;
-
-                if (act.type === "hotel") {
-                    description += ` - 🏨 ${act.activity}`;
-                } else if (act.type === "meal") {
-                    description += ` - 🍴 ${act.activity}`;
-                } else if (act.type === "flight") {
-                    description += ` - ✈️ ${act.activity}`;
-                } else if (act.type === "adventure") {
-                    description += ` - 🌏 ${act.activity}`;
-                } else {
-                    description += ` - ${act.activity}`;
-                }
-
-                listItem.textContent = description;
+                listItem.classList.add(act.type);
+                listItem.textContent = `${act.time} - ${act.activity}`;
                 activityList.appendChild(listItem);
             });
 
             dayDiv.appendChild(activityList);
             container.appendChild(dayDiv);
         });
+
+        // Append Additional Details section
+        if (data.additionalDetails) {
+            const additionalDiv = document.createElement('div');
+            additionalDiv.classList.add('additional-details');
+            const additionalHeading = document.createElement('h4');
+            additionalHeading.textContent = "Additional Details";
+            additionalDiv.appendChild(additionalHeading);
+            const additionalPara = document.createElement('p');
+            additionalPara.textContent = data.additionalDetails;
+            additionalDiv.appendChild(additionalPara);
+            container.appendChild(additionalDiv);
+        }
 
         loadedTabs[location] = true; // Mark this tab as loaded
     }
@@ -138,15 +150,12 @@
         });
     });
 
-    // Initialize
+    // Initialize first tab
     tabs[0].click();
 </script>
 
 <footer>
-    <p>Adventure Funding: Bubi</p>
-    <p>Travel Agent: Lorie</p>
-    <p>App Developer: Brian</p>
-    <p><a href="https://briangroth.github.io/4xBingo/">Also see our travel bingo app.</a></p>
+    <p><a href="feedback.html">Feedback</a></p>
 </footer>
 
 </body>

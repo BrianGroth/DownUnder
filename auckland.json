@@ -32,5 +32,6 @@
                 { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
             ]
         }
-    ]
+    ],
+    "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Auckland here."
 }
