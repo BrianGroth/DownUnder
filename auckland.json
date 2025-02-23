@@ -27,11 +27,12 @@
         {
             "date": "Hotel",
             "activities": [
-                { "time": "InterContinental Auckland, 1 Queen Street, Auckland NZ 1010" },
-                { "time": "64093040040" }
+                { "time": "", "activity": "InterContinental Auckland", "type": "hotel" },
+                { "time": "", "activity": "1 Queen Street, Auckland NZ 1010", "type": ""},
+                { "time": "", "activity": "64093040040", "type": "" }
             ]
         }
         
-    ],
-    "additionalDetails": "Hotel: InterContinental Auckland, 1 Queen Street, Auckland NZ 1010"
+    ]
+
 }
