@@ -1,166 +1,320 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel App: New Zealand & Australia</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 1.6em; /* Increase font size */
-            margin: 0;
-            padding: 0;
-        }
-        .tabs {
-            display: flex;
-            background-color: #f0f0f0;
-        }
-        .tab {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            color: black;
-            background-color: lightgray;
-        }
-        .tab.active {
-            border-bottom: 2px solid #007BFF;
-            font-weight: bold;
-            background-color: white;
-        }
-        .content {
-            display: none;
-            padding: 20px;
-        }
-        .content.active {
-            display: block;
-        }
-        .day {
-            margin-bottom: 20px;
-        }
-        /* Updated activities list style */
-        .activities {
-            list-style: none;
-            padding-left: 0;
-        }
-        .activities li {
-            padding-left: 1.5em;
-            text-indent: -1.5em;
-            margin-bottom: 5px;
-        }
-        /* Pseudo-elements for activity icons */
-        .activities li.hotel::before { content: "💤 "; }
-        .activities li.meal::before { content: "🍴 "; }
-        .activities li.flight::before { content: "✈️ "; }
-        .activities li.adventure::before { content: "🌏 "; }
-        footer {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            text-align: center;
-            font-size: 0.9em;
-        }
-        footer a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-
-<div class="tabs">
-    <div class="tab" data-tab="auckland">Auckland</div>
-    <div class="tab" data-tab="sydney">Sydney</div>
-    <div class="tab" data-tab="cairns">Cairns</div>
-</div>
-
-<div class="content" id="auckland"></div>
-<div class="content" id="sydney"></div>
-<div class="content" id="cairns"></div>
-
-<script>
-    const loadedTabs = {};
-
-    // Load JSON data and render content
-    async function loadData(location) {
-        if (loadedTabs[location]) return; // Prevent duplicate loads
-
-        const response = await fetch(`${location.toLowerCase()}.json`);
-        const data = await response.json();
-        const container = document.getElementById(location.toLowerCase());
-
-        // Render each day with activities
-        data.days.forEach(day => {
-            const dayDiv = document.createElement('div');
-            dayDiv.classList.add('day');
-
-            const dateHeading = document.createElement('h3');
-            dateHeading.textContent = day.date;
-            dayDiv.appendChild(dateHeading);
-
-            const activityList = document.createElement('ul');
-            activityList.classList.add('activities');
-
-            day.activities.forEach(act => {
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Travel App: New Zealand & Australia</title>
+          <style>
+            /* Modern Base Styling */
+            body {
+              font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              background-color: #fafafa;
+              color: #333;
+              line-height: 1.6;
+            }
+            .tabs {
+              display: flex;
+              background-color: #fff;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              border-bottom: 1px solid #ddd;
+            }
+            .tab {
+              flex: 1;
+              padding: 15px 10px;
+              text-align: center;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+              font-size: 1em;
+              color: #555;
+            }
+            .tab:hover {
+              background-color: #f9f9f9;
+            }
+            .tab.active {
+              color: #007BFF;
+              border-bottom: 3px solid #007BFF;
+              font-weight: bold;
+              background-color: #fff;
+            }
+            .content {
+              display: none;
+              padding: 20px;
+              background-color: #fff;
+              animation: fadeIn 0.3s ease-in-out;
+            }
+            .content.active {
+              display: block;
+            }
+            .day {
+              margin-bottom: 20px;
+              border-bottom: 1px solid #eee;
+              padding-bottom: 10px;
+            }
+            .day h3 {
+              margin: 0 0 10px;
+              color: #007BFF;
+            }
+            .activities {
+              list-style: none;
+              padding: 0;
+            }
+            .activities li {
+              padding: 8px 0;
+              border-left: 3px solid transparent;
+              margin-bottom: 5px;
+              padding-left: 10px;
+              transition: border-color 0.3s ease;
+            }
+            .activities li:hover {
+              border-color: #007BFF;
+            }
+            .activities li.hotel::before { content: "💤 "; }
+            .activities li.meal::before { content: "🍽️ "; }
+/*            .activities li.hotel::before { content: "🏨 "; } */
+/*            .activities li.meal::before { content: "🍴 "; } */
+            .activities li.flight::before { content: "✈️ "; }
+            .activities li.adventure::before { content: "🌍 "; }
+            .additional-details p:first-child {
+              font-weight: bold;
+              margin-bottom: 5px;
+              color: #555;
+            }
+            footer {
+              margin-top: 20px;
+              padding: 10px;
+              background-color: #fff;
+              border-top: 1px solid #ddd;
+              text-align: center;
+              font-size: 0.9em;
+            }
+            footer a {
+              color: #007BFF;
+              text-decoration: none;
+            }
+            footer a:hover {
+              text-decoration: underline;
+            }
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+          </style>
+        </head>
+        <body>
+        
+        <div class="tabs">
+          <div class="tab" data-tab="auckland">Auckland</div>
+          <div class="tab" data-tab="sydney">Sydney</div>
+          <div class="tab" data-tab="cairns">Cairns</div>
+        </div>
+        
+        <div class="content" id="auckland"></div>
+        <div class="content" id="sydney"></div>
+        <div class="content" id="cairns"></div>
+        
+        <script>
+          // Embedded JSON data from your external files
+          const travelData = {
+            auckland: {
+              "headerImage": "auckland-image.jpeg",
+              "days": [
+                {
+                  "date": "Sunday, June 15",
+                  "activities": [
+                    { "time": "Morning", "activity": "Arrive", "type": "adventure" },
+                    { "time": "3:00 PM", "activity": "Check in at InterContinental Auckland", "type": "hotel" },
+                    { "time": "? PM", "activity": "Dinner; location is TBD", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Monday, June 16",
+                  "activities": [
+                    { "time": "All Day", "activity": "Flexible", "type": "adventure" },
+                    { "time": "12:00 PM", "activity": "Fish Market for Lunch", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Tuesday & Wednesday, June 17 & 18",
+                  "activities": [
+                    { "time": "9:00 AM", "activity": "2-Day Tour to Rotorua, Glow Worm Caves & Hobbiton", "type": "adventure" },
+                    { "time": "7:00 PM", "activity": "Tuesday: Pullman Rotorua", "type": "hotel" },
+                    { "time": "7:00 PM", "activity": "Wednesday: Pullman Auckland Airport", "type": "hotel" }
+                  ]
+                },
+                {
+                  "date": "Hotel",
+                  "activities": [
+                    { "time": "", "activity": "InterContinental Auckland", "type": "hotel" },
+                    { "time": "", "activity": "1 Queen Street, Auckland NZ 1010", "type": "" },
+                    { "time": "", "activity": "64093040040", "type": "" }
+                  ]
+                }
+              ]
+            },
+            sydney: {
+              "headerImage": "sydney-image.jpeg",
+              "days": [
+                {
+                  "date": "Thursday, June 19",
+                  "activities": [
+                    { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) to Sydney", "type": "flight" },
+                    { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" },
+                    { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Friday, June 20",
+                  "activities": [
+                    { "time": "Morning", "activity": "4-hour walking tour (Jewish in Sydney)", "type": "adventure" },
+                    { "time": "Afternoon", "activity": "Fish Market for Lunch", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Saturday, June 21",
+                  "activities": [
+                    { "time": "8:00 AM", "activity": "All-day Tour (Blue Mountains, Waterfalls, Scenic World, Featherdale Wildlife)", "type": "adventure" },
+                    { "time": "Evening", "activity": "Sydney Opera", "type": "adventure" }
+                  ]
+                },
+                {
+                  "date": "Sunday, June 22",
+                  "activities": [
+                    { "time": "8:00 AM", "activity": "Visit Taronga Zoo (walk through Botanical garden to Circular Quay ferry)", "type": "adventure" },
+                    { "time": "Evening", "activity": "Free evening", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Monday, June 23",
+                  "activities": [
+                    { "time": "9:45 AM", "activity": "Quantas (QF922) to Cairns", "type": "flight" },
+                    { "time": "12:00 PM", "activity": "Check in at Shangri-La The Marina", "type": "hotel" },
+                    { "time": "Evening", "activity": "Dinner", "type": "meal" }
+                  ]
+                }
+              ],
+              "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Sydney here."
+            },
+            cairns: {
+              "headerImage": "cairns-image.jpeg",
+              "days": [
+                {
+                  "date": "Monday, June 23",
+                  "activities": [
+                    { "time": "9:45 AM", "activity": "Quantas (QF922) to Cairns", "type": "flight" },
+                    { "time": "12:00 PM", "activity": "Check in at Shangri-La The Marina", "type": "hotel" },
+                    { "time": "Evening", "activity": "Dinner", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Tuesday, June 24",
+                  "activities": [
+                    { "time": "Morning", "activity": "Flex time", "type": "adventure" },
+                    { "time": "12:00 PM", "activity": "1/2 Day Tour (Harley's Crocs)", "type": "adventure" }
+                  ]
+                },
+                {
+                  "date": "Wednesday, June 25",
+                  "activities": [
+                    { "time": "8:00 AM", "activity": "All-day Tour (Great Barrier Reef - Green Island)", "type": "adventure" }
+                  ]
+                },
+                {
+                  "date": "Thursday, June 26",
+                  "activities": [
+                    { "time": "10:00 AM", "activity": "Brunch", "type": "meal" },
+                    { "time": "Afternoon", "activity": "Flex time", "type": "adventure" }
+                  ]
+                },
+                {
+                  "date": "Friday, June 27",
+                  "activities": [
+                    { "time": "8:00 AM", "activity": "Visit Kuranda", "type": "adventure" },
+                    { "time": "6:00 PM", "activity": "Dinner", "type": "meal" }
+                  ]
+                },
+                {
+                  "date": "Saturday, June 28",
+                  "activities": [
+                    { "time": "9:00 AM", "activity": "not sure", "type": "adventure" }
+                  ]
+                }
+              ],
+              "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Cairns here."
+            }
+          };
+        
+          const loadedTabs = {};
+        
+          function loadData(location) {
+            if (loadedTabs[location]) return;
+            const data = travelData[location];
+            const container = document.getElementById(location);
+        
+            data.days.forEach(day => {
+              const dayDiv = document.createElement('div');
+              dayDiv.classList.add('day');
+        
+              const dateHeading = document.createElement('h3');
+              dateHeading.textContent = day.date;
+              dayDiv.appendChild(dateHeading);
+        
+              const activityList = document.createElement('ul');
+              activityList.classList.add('activities');
+        
+              day.activities.forEach(act => {
                 const listItem = document.createElement('li');
-                listItem.classList.add(act.type);
+                if (act.type) listItem.classList.add(act.type);
                 listItem.textContent = `${act.time} - ${act.activity}`;
                 activityList.appendChild(listItem);
+              });
+        
+              dayDiv.appendChild(activityList);
+              container.appendChild(dayDiv);
             });
-
-            dayDiv.appendChild(activityList);
-            container.appendChild(dayDiv);
-        });
-
-        // Append Additional Details section
-        if (data.additionalDetails) {
-            const additionalDiv = document.createElement('div');
-            additionalDiv.classList.add('additional-details');
-            const additionalHeading = document.createElement('p');
-            additionalHeading.textContent = "Additional Details";
-            additionalDiv.appendChild(additionalHeading);
-            const additionalPara = document.createElement('p');
-            additionalPara.textContent = data.additionalDetails;
-            additionalDiv.appendChild(additionalPara);
-            container.appendChild(additionalDiv);
-        }
-
-        loadedTabs[location] = true; // Mark this tab as loaded
-    }
-
-    // Tab functionality
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-
-            tab.classList.add('active');
-            const content = document.getElementById(tab.dataset.tab);
-            content.classList.add('active');
-
-            // Load data for the active tab
-            loadData(tab.dataset.tab);
-        });
-    });
-
-    // Initialize first tab
-    tabs[0].click();
-</script>
-
-<footer>
-    <p>Adventure Funding: Bubi</p>
-    <p>Travel Agent: Lorie</p>
-    <p>App Developer: Brian</p>
-    <p><a href="https://briangroth.github.io/4xBingo/">Also: Travel Photo Bingo</a></p>
-    <p><a href="feedback.html">Got feedback?</a></p>
-</footer>
-
-</body>
-</html>
+        
+            if (data.additionalDetails) {
+              const additionalDiv = document.createElement('div');
+              additionalDiv.classList.add('additional-details');
+              const additionalHeading = document.createElement('p');
+              additionalHeading.textContent = "Additional Details";
+              additionalDiv.appendChild(additionalHeading);
+              const additionalPara = document.createElement('p');
+              additionalPara.textContent = data.additionalDetails;
+              additionalDiv.appendChild(additionalPara);
+              container.appendChild(additionalDiv);
+            }
+            loadedTabs[location] = true;
+          }
+        
+          const tabs = document.querySelectorAll('.tab');
+          const contents = document.querySelectorAll('.content');
+        
+          tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+              tabs.forEach(t => t.classList.remove('active'));
+              contents.forEach(c => c.classList.remove('active'));
+        
+              tab.classList.add('active');
+              const content = document.getElementById(tab.dataset.tab);
+              content.classList.add('active');
+        
+              loadData(tab.dataset.tab);
+            });
+          });
+        
+          // Initialize the first tab
+          tabs[0].click();
+        </script>
+        
+        <footer>
+          <p>Adventure Funding: Bubi</p>
+          <p>Travel Agent: Lorie</p>
+          <p>App Developer: Brian</p>
+          <p><a href="https://briangroth.github.io/4xBingo/">Also: Travel Photo Bingo</a></p>
+          <p><a href="feedback.html">Got feedback?</a></p>
+        </footer>
+        
+        </body>
+        </html>
