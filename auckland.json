@@ -17,22 +17,13 @@
             ]
         },
         {
-            "date": "Tuesday & Wednesday, June 17 & 18",
+            "date": "Thursday, June 19",
             "activities": [
-                { "time": "9:00 AM", "activity": "2-Day Tour to Rotorua, Glow Worm Caves & Hobbiton", "type": "adventure" },
-                { "time": "7:00 PM", "activity": "Tuesday: Pullman Rotorua", "type": "hotel" },
-                { "time": "7:00 PM", "activity": "Wednesday: Pullman Auckland Airport", "type": "hotel" },
-            ]
-        },
-        {
-            "date": "Hotel",
-            "activities": [
-                { "time": "", "activity": "InterContinental Auckland", "type": "hotel" },
-                { "time": "", "activity": "1 Queen Street, Auckland NZ 1010", "type": ""},
-                { "time": "", "activity": "64093040040", "type": "" }
+                { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) AKL-SYD", "type": "flight" },
+                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" },
+                { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
             ]
         }
-        
-    ]
-
+    ],
+    "additionalDetails": "Placeholder for Additional Details. Add hotel addresses and other details for Auckland here."
 }
