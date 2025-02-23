@@ -27,7 +27,8 @@
         {
             "date": "Hotel",
             "activities": [
-                { "hotel": "Hotel: InterContinental Auckland, 1 Queen Street, Auckland NZ 1010" }
+                { "time": "InterContinental Auckland, 1 Queen Street, Auckland NZ 1010" }
+                { "time": "1010" }
             ]
         }
         
