@@ -25,13 +25,12 @@
             ]
         },
         {
-            "date": "Thursday, June 19",
+            "date": "Hotel",
             "activities": [
-                { "time": "9:00 AM", "activity": "Air New Zealand (NZ103) AKL-SYD", "type": "flight" },
-                { "time": "12:00 PM", "activity": "Check in at Ovolo Woolloomooloo", "type": "hotel" },
-                { "time": "? PM", "activity": "Dinner in Sydney; location is TBD", "type": "meal" }
+                { "hotel": "Hotel: InterContinental Auckland, 1 Queen Street, Auckland NZ 1010" }
             ]
         }
+        
     ],
-    "additionalDetails": "Auckland hotel: InterContinental Auckland at 1 Queen Street, Auckland New Zealand 1010"
+    "additionalDetails": "Hotel: InterContinental Auckland, 1 Queen Street, Auckland NZ 1010"
 }
