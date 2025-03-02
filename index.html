@@ -106,13 +106,14 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh; /* Use viewport height instead of % */
       background-color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 9999;
       transition: opacity 1s ease;
+      overflow: hidden; /* Prevent scrolling */
     }
     /* Tab image styling */
     .tab-image {
@@ -129,7 +130,7 @@
 
 <!-- Opening Image Overlay -->
 <div id="openingImageContainer">
-  <img src="openingimage.jpg" alt="Opening Image">
+  <img src="justmonstersandvan.jpg" alt="Opening Image">
 </div>
 
 <div class="tabs">
