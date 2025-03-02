@@ -329,6 +329,23 @@
       }, 1000); // Allow time for fade-out transition
     }, 1000); // Delay before starting fade-out (adjust as needed)
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  let defaultTab = "auckland"; // default fallback
+
+  // Example thresholds – adjust these dates as needed.
+  if (now >= new Date("2025-03-01T00:00:00")) {
+    defaultTab = "sydney";
+  }
+  if (now >= new Date("2025-06-23T00:00:00")) {
+    defaultTab = "cairns";
+  }
+
+  // Trigger the click on the tab that matches the defaultTab
+  document.querySelector(`.tab[data-tab="${defaultTab}"]`).click();
+});
+
 </script>
 
 <footer>
