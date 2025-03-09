@@ -6,300 +6,533 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Down Under Travel App</title>
+  <title>Down Under Adventure</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Modern Base Styling */
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    :root {
+      --primary-color: #0077cc;
+      --secondary-color: #00a896;
+      --accent-color: #f4a261;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background-color: #fafafa;
-      color: #333;
-      line-height: 1.6;
-      font-size: 20px;
     }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      padding-bottom: 60px; /* Space for footer */
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
+      padding: 20px;
+      text-align: center;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    
+    .subtitle {
+      font-style: italic;
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+    
     .tabs {
       display: flex;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border-bottom: 1px solid #ddd;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
     }
+    
     .tab {
       flex: 1;
-      padding: 15px 10px;
+      padding: 15px 5px;
       text-align: center;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      font-size: 1em;
-      background-color: #e9e8f6;
-      color: #555;
+      transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark-text);
+      position: relative;
+      overflow: hidden;
     }
+    
+    .tab i {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+    
     .tab:hover {
-      background-color: #f9f9f9;
+      background-color: rgba(0,0,0,0.05);
     }
+    
     .tab.active {
-      color: #007BFF;
-      border-bottom: 3px solid #007BFF;
-      font-weight: bold;
-      background-color: #fff;
+      color: var(--primary-color);
+      background-color: var(--white);
     }
+    
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
     .content {
       display: none;
-      padding: 20px;
-      background-color: #fff;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
       animation: fadeIn 0.3s ease-in-out;
+      padding: 0;
+      overflow: hidden;
     }
+    
     .content.active {
       display: block;
     }
+    
+    .tab-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background-color: #ddd;
+    }
+    
+    .tab-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .tab-image:hover img {
+      transform: scale(1.05);
+    }
+    
+    .location-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: white;
+      padding: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    
+    .itinerary {
+      padding: 20px;
+    }
+    
     .day {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      padding-bottom: 15px;
     }
+    
+    .day:last-child {
+      border-bottom: none;
+    }
+    
     .day h3 {
-      margin: 0 0 10px;
-      color: #007BFF;
+      margin: 0 0 15px;
+      color: var(--primary-color);
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
     }
+    
+    .day h3::before {
+      content: '📅';
+      margin-right: 8px;
+    }
+    
+    .day h3.hotel::before {
+      content: '🏨';
+    }
+    
     .activities {
       list-style: none;
-      padding: 0;
     }
+    
     .activities li {
-      padding: 8px 0;
-      border-left: 3px solid transparent;
-      margin-bottom: 5px;
-      padding-left: 10px;
-      transition: border-color 0.3s ease;
+      padding: 10px 15px;
+      margin-bottom: 8px;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      position: relative;
     }
+    
     .activities li:hover {
-      border-color: #007BFF;
+      transform: translateX(5px);
+      box-shadow: var(--shadow);
     }
+    
+    .activities li.hotel { border-left: 4px solid #7986cb; }
+    .activities li.meal { border-left: 4px solid #ff8a65; }
+    .activities li.flight { border-left: 4px solid #4fc3f7; }
+    .activities li.adventure { border-left: 4px solid #81c784; }
+    
     .activities li.hotel::before { content: "💤 "; }
     .activities li.meal::before { content: "🍽️ "; }
     .activities li.flight::before { content: "✈️ "; }
     .activities li.adventure::before { content: "🌍 "; }
-    .additional-details p:first-child {
+    
+    .time {
       font-weight: bold;
-      margin-bottom: 5px;
-      color: #555;
+      color: var(--primary-color);
     }
-    footer {
+    
+    .hotel-details {
+      background-color: var(--light-bg);
+      padding: 15px;
+      border-radius: var(--border-radius);
       margin-top: 10px;
-      padding: 5px;
-      background-color: #eaeaf9;
-      border-top: 1px solid #ddd;
+    }
+    
+    .hotel-name {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+    
+    .hotel-address, .hotel-phone {
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    
+    footer {
+      background-color: var(--white);
+      padding: 15px;
       text-align: center;
       font-size: 0.9em;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-top: 20px;
     }
+    
+    footer p {
+      margin: 5px 0;
+    }
+    
     footer a {
-      color: #007BFF;
+      color: var(--primary-color);
       text-decoration: none;
+      transition: var(--transition);
     }
+    
     footer a:hover {
+      color: var(--secondary-color);
       text-decoration: underline;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    
+    .footer-divider {
+      margin: 10px 0;
+      border: 0;
+      border-top: 1px solid #eee;
     }
-    /* Opening image overlay styling */
-    /*
-    #openingImageContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%; 
-      height: 100%;  
-      background-color: #fff;
+    
+    .footer-links {
       display: flex;
       justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .footer-link {
+      display: flex;
       align-items: center;
-      z-index: 9999;
-      transition: opacity 1s ease;
-      overflow: hidden; 
+      gap: 5px;
     }
-    */
-    /* Tab image styling */
-    .tab-image {
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .countdown {
       text-align: center;
-      margin-bottom: 20px;
+      margin: 10px 0;
+      font-weight: bold;
+      color: var(--accent-color);
     }
-    .tab-image img {
-      max-width: 100%;
-      height: auto;
+        
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .tab span {
+        font-size: 0.9em;
+      }
+      
+      .location-title {
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- Opening Image Overlay -->
-<!-- 
-<div id="openingImageContainer">
-  <img src="justmonstersandvan.jpg" alt="Opening Image">
-</div>
--->
+<header>
+  <h1>Down Under Adventure</h1>
+  <div class="subtitle">3 cities, 14 days, 5 hotels</div>
+  <!-- Countdown element is commented out to suit your design;
+       updateCountdown now checks for its existence before updating. -->
+  <!-- <div class="countdown" id="countdown">Loading...</div> -->
+</header>
 
 <div class="tabs">
-  <div class="tab" data-tab="auckland">Auckland</div>
-  <div class="tab" data-tab="sydney">Sydney</div>
-  <div class="tab" data-tab="cairns">Cairns</div>
+  <div class="tab" data-tab="auckland" data-city="Auckland,nz">
+    <i class="fas fa-mountain"></i>
+    <span>Auckland</span>
+  </div>
+  <div class="tab" data-tab="sydney" data-city="Sydney,au">
+    <i class="fas fa-opera"></i>
+    <span>Sydney</span>
+  </div>
+  <div class="tab" data-tab="cairns" data-city="Cairns,au">
+    <i class="fas fa-water"></i>
+    <span>Cairns</span>
+  </div>
 </div>
 
 <!-- Auckland Content -->
 <div class="content" id="auckland">
-  <!-- Unique Image Placeholder for Auckland -->
   <div class="tab-image">
-    <img src="aucklandimage.jpg" alt="Auckland">
+    <img src="aucklandimage.jpg" alt="Auckland Skyline">
+    <div class="location-title">Auckland, New Zealand</div>
   </div>
-  <div class="day">
-    <h3>Sunday, June 15</h3>
-    <ul class="activities">
-      <li class="adventure">Morning - Arrive</li>
-      <li class="meal">? PM - Dinner; location is TBD</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Monday, June 16</h3>
-    <ul class="activities">
-      <li class="adventure">All Day - Flexible</li>
-      <li class="meal">12:00 PM - Fish Market for Lunch</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Tuesday & Wednesday, June 17 & 18</h3>
-    <ul class="activities">
-      <li class="adventure">9:00 AM - 2-Day Tour to Rotorua, Glow Worm Caves & Hobbiton</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Hotel</h3>
-    <ul class="activities">
-      <li class="hotel">InterContinental Auckland</li>
-      <li>1 Queen Street, Auckland NZ 1010</li>
-      <li>+64 0 9304 0040</li>
-    </ul>
-    <h3>Hotel</h3>
-    <ul class="activities">
-      <li class="hotel">Pullman Rotorua</li>
-      <li>1135 Arawa St - 3010 ROTORUA - New Zealand</li>
-      <li>+64 7343 9750</li>
-    </ul>
-    <h3>Hotel</h3>
-    <ul class="activities">
-      <li class="hotel">Pullman Auckland Airport</li>
-      <li>Auckland International Airport, 37 Tom Pearce Drive, P.O.BOX 53163, Auckland Airport - 2022 Auckland - New Zealand</li>
-      <li>+64 9 2567901</li>
-    </ul>
+  
+  <div class="itinerary">
+    <div class="day">
+      <h3>Sunday, June 15</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">Arrivals!</span> -(B&L after 12:00)</li>
+        <li class="meal"><span class="time">TBD</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Monday, June 16</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">12:00</span> - Lunch @ Fish Market</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Tuesday, June 17</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:00</span> - <a href="Auckland - 2 Day Big Tour.pdf"></a>Big Tour</a> pick-up</li>
+        <li class="adventure"><span class="time">17:15</span> - Dinner pick-up</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Wednesday, June 18</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">9:30</span> - Big Tour pick-up</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <h3>Thursday, June 19</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">6:45</span> - Go to airport</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <h3 class="hotel">Hotels</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">InterContinental Auckland</div>
+        <div class="hotel-address">1 Queen Street, Auckland NZ 1010</div>
+        <div class="hotel-phone">+64 0 9304 0040</div>
+      </div>
+      
+      <div class="hotel-details">
+        <div class="hotel-name">Pullman Rotorua</div>
+        <div class="hotel-address">1135 Arawa St - 3010 ROTORUA - New Zealand</div>
+        <div class="hotel-phone">+64 7343 9750</div>
+      </div>
+      
+      <div class="hotel-details">
+        <div class="hotel-name">Pullman Auckland Airport</div>
+        <div class="hotel-address">Auckland International Airport, 37 Tom Pearce Drive, Auckland Airport - 2022 Auckland - New Zealand</div>
+        <div class="hotel-phone">+64 9 2567901</div>
+      </div>
+    </div>      
   </div>
 </div>
 
 <!-- Sydney Content -->
 <div class="content" id="sydney">
-  <!-- Unique Image Placeholder for Sydney -->
   <div class="tab-image">
-    <img src="sydneyimage.jpg" alt="Sydney">
+    <img src="sydneyimage.jpg" alt="Sydney Opera House">
+    <div class="location-title">Sydney, Australia</div>
   </div>
-  <div class="day">
-    <h3>Thursday, June 19</h3>
-    <ul class="activities">
-      <li class="flight">9:00 AM - Air New Zealand (NZ103) to Sydney</li>
-      <li class="meal">? PM - Dinner in Sydney; location is TBD</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Friday, June 20</h3>
-    <ul class="activities">
-      <li class="adventure">Morning - 4-hour walking tour (Jewish in Sydney)</li>
-      <li class="meal">Afternoon - Fish Market for Lunch</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Saturday, June 21</h3>
-    <ul class="activities">
-      <li class="adventure">8:00 AM - All-day Tour (Blue Mountains, Waterfalls, Scenic World, Featherdale Wildlife)</li>
-      <li class="adventure">Evening - Sydney Opera</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Sunday, June 22</h3>
-    <ul class="activities">
-      <li class="adventure">8:00 AM - Visit Taronga Zoo (walk through Botanical garden to Circular Quay ferry)</li>
-      <li class="meal">Evening - Free evening</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Monday, June 23</h3>
-    <ul class="activities">
-      <li class="flight">9:45 AM - Quantas (QF922) to Cairns</li>
-      <li class="meal">Evening - Dinner</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Hotel</h3>
-    <ul class="activities">
-      <li class="hotel">Ovolo Woolloomooloo</li>
-      <li>6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</li>
-      <li>+61 2 9331 9000</li>
-    </ul>
+  
+  <div class="itinerary">
+    <div class="day">
+      <h3>Thursday, June 19</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">TBD</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Friday, June 20</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">9:00</span> - <a href="Sydney - Jewish Heritage Tour.pdf"></a>Jewish Tour</a></li>
+        <li class="meal"><span class="time">13:00</span> - Lunch @ Fish Market</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Saturday, June 21</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:00</span> - Nature Tour</li>
+        <li class="adventure"><span class="time">TBD?</span> - Sydney Opera House</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Sunday, June 22</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:00 AM</span> - Taronga Zoo</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Monday, June 23</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">6:45</span> - Go to airport</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3 class="hotel">Hotel</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">Ovolo Woolloomooloo</div>
+        <div class="hotel-address">6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</div>
+        <div class="hotel-phone">+61 2 9331 9000</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Cairns Content -->
 <div class="content" id="cairns">
-  <!-- Unique Image Placeholder for Cairns -->
   <div class="tab-image">
-    <img src="cairnsimage.jpg" alt="Cairns">
+    <img src="cairnsimage.jpg" alt="Great Barrier Reef">
+    <div class="location-title">Cairns, Australia</div>
   </div>
-  <div class="day">
-    <h3>Monday, June 23</h3>
-    <ul class="activities">
-      <li class="flight">9:45 AM - Quantas (QF922) to Cairns</li>
-      <li class="meal">Evening - Dinner</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Tuesday, June 24</h3>
-    <ul class="activities">
-      <li class="adventure">Morning - Flex time</li>
-      <li class="adventure">12:00 PM - 1/2 Day Tour (Harley's Crocs)</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Wednesday, June 25</h3>
-    <ul class="activities">
-      <li class="adventure">8:00 AM - All-day Tour (Great Barrier Reef - Green Island)</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Thursday, June 26</h3>
-    <ul class="activities">
-      <li class="meal">10:00 AM - Brunch</li>
-      <li class="adventure">Afternoon - Flex time</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Friday, June 27</h3>
-    <ul class="activities">
-      <li class="adventure">8:00 AM - Visit Kuranda</li>
-      <li class="meal">6:00 PM - Dinner</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Saturday, June 28</h3>
-    <ul class="activities">
-      <li class="adventure">9:00 AM - not sure</li>
-    </ul>
-  </div>
-  <div class="day">
-    <h3>Hotel</h3>
-    <ul class="activities">
-      <li class="hotel">Shangri-La The Marina, Cairns</li>
-      <li>Pier Point Road, Cairns Queensland 4870</li>
-      <li>+61 7 4052 7500</li>
-    </ul>
+  
+  <div class="itinerary">
+    <div class="day">
+      <h3>Monday, June 23</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">TBD</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Tuesday, June 24</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">12:00</span> - 1/2 Day Tour (Harley's Crocs)</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Wednesday, June 25</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:00</span> - Green Island/Great Barrier Reef Day</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Thursday, June 26</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">TBD</span> - Stuff we do</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Friday, June 27</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">9:00</span> - Visit Kuranda</li>
+        <li class="meal"><span class="time">6:00 PM</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Saturday, June 28</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">9:00?</span> - Dan, Beth, Neely, Skai, Gabe &amp; Lily go to airportTBD</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3 class="hotel">Hotel</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">Shangri-La The Marina, Cairns</div>
+        <div class="hotel-address">Pier Point Road, Cairns Queensland 4870</div>
+        <div class="hotel-phone">+61 7 4052 7500</div>
+      </div>
+    </div>
   </div>
 </div>
+
+<footer>
+  <p><strong>Adventure Funding:</strong> Bubi</p>
+  <p><strong>Travel Agent:</strong> Lorie</p>
+  <p><strong>App Developer:</strong> Brian</p>
+  
+  <hr class="footer-divider">
+  
+  <div class="footer-links">
+    <a href="https://briangroth.github.io/4xBingo/" class="footer-link">
+      <i class="fas fa-gamepad"></i> Travel Photo Bingo
+    </a>
+    <a href="feedback.html" class="footer-link">
+      <i class="fas fa-comment"></i> Feedback?
+    </a>
+  </div>
+</footer>
 
 <script>
   // Tab switching logic
@@ -308,55 +541,71 @@
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
+      const cityName = tab.dataset.city;
+      
       tabs.forEach(t => t.classList.remove('active'));
       contents.forEach(c => c.classList.remove('active'));
 
       tab.classList.add('active');
       document.getElementById(tab.dataset.tab).classList.add('active');
+      
+      // Save the active tab preference to localStorage
+      localStorage.setItem('activeTab', tab.dataset.tab);
+      
     });
   });
 
-  // Initialize first tab
-  tabs[0].click();
+  // Choose the correct default tab based on date or previous selection
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if there's a saved tab preference
+    const savedTab = localStorage.getItem('activeTab');
+    
+    // Get current date
+    const now = new Date();
+    let defaultTab = "auckland"; // default fallback
 
-  // Fade out the opening image overlay after a short delay
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      const openingContainer = document.getElementById('openingImageContainer');
-      openingContainer.style.opacity = '0';
-      setTimeout(function(){
-        openingContainer.style.display = 'none';
-      }, 1000); // Allow time for fade-out transition
-    }, 1000); // Delay before starting fade-out (adjust as needed)
+    // Determine default tab based on trip dates
+    if (now >= new Date("2025-06-19T00:00:00")) {
+      defaultTab = "sydney";
+    }
+    if (now >= new Date("2025-06-23T00:00:00")) {
+      defaultTab = "cairns";
+    }
+
+    // Use saved preference if available, otherwise use date-based default
+    const tabToActivate = savedTab || defaultTab;
+    
+    // Trigger the click on the appropriate tab
+    document.querySelector(`.tab[data-tab="${tabToActivate}"]`).click();
+    
+    // Initialize countdown if the element exists
+    updateCountdown();
+    // Update countdown every day
+    setInterval(updateCountdown, 86400000);
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-  const now = new Date();
-  let defaultTab = "auckland"; // default fallback
-
-  // Example thresholds – adjust these dates as needed.
-  if (now >= new Date("2025-06-19T00:00:00")) {
-    defaultTab = "sydney";
+  // Countdown function with a check for the element
+  function updateCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    if (!countdownElement) return;
+    
+    const tripStart = new Date("2025-06-15T00:00:00");
+    const now = new Date();
+    
+    if (now >= tripStart && now <= new Date("2025-06-28T23:59:59")) {
+      // Trip is ongoing
+      const tripDay = Math.floor((now - tripStart) / (1000 * 60 * 60 * 24)) + 1;
+      countdownElement.innerHTML = `<span style="color:#ff8a65">🎉 Day ${tripDay} of your adventure! 🎉</span>`;
+    } else if (now < tripStart) {
+      // Trip is in the future
+      const daysToGo = Math.ceil((tripStart - now) / (1000 * 60 * 60 * 24));
+      countdownElement.textContent = `${daysToGo} days until your adventure begins!`;
+    } else {
+      // Trip is in the past
+      countdownElement.textContent = `Your adventure has concluded!`;
+    }
   }
-  if (now >= new Date("2025-06-23T00:00:00")) {
-    defaultTab = "cairns";
-  }
-
-  // Trigger the click on the tab that matches the defaultTab
-  document.querySelector(`.tab[data-tab="${defaultTab}"]`).click();
-});
-
+  
 </script>
-
-<footer>
-  <p>Adventure Funding: Bubi</p>
-  <p>Travel Agent: Lorie</p>
-  <p>App Developer: Brian</p>
-  <hr>
-  <p>Also: <a href="https://briangroth.github.io/4xBingo/">We can play our Travel Photo Bingo game!</a></p>
-  <p><a href="feedback.html">Got feedback?</a></p>
-  <p></p>
-</footer>
-
 </body>
 </html>
