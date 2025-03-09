@@ -294,30 +294,6 @@
       color: var(--accent-color);
     }
     
-    .trip-stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: var(--light-bg);
-      border-radius: var(--border-radius);
-    }
-    
-    .stat {
-      text-align: center;
-    }
-    
-    .stat-value {
-      font-size: 1.5em;
-      font-weight: bold;
-      color: var(--primary-color);
-    }
-    
-    .stat-label {
-      font-size: 0.8em;
-      color: #666;
-    }
-    
     /* Weather widget styling */
     .weather-widget {
       display: flex;
@@ -436,11 +412,6 @@
     
     /* Responsive design */
     @media (max-width: 600px) {
-      .trip-stats {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
       .tab span {
         font-size: 0.9em;
       }
@@ -464,24 +435,11 @@
 
 <header>
   <h1>Down Under Adventure</h1>
-  <div class="subtitle">June 15-28, 2025</div>
-  <div class="countdown" id="countdown">Loading...</div>
+  <div class="subtitle">3 cities, 14 days, 5 hotels</div>
+  <!-- Countdown element is commented out to suit your design;
+       updateCountdown now checks for its existence before updating. -->
+  <!-- <div class="countdown" id="countdown">Loading...</div> -->
 </header>
-
-<div class="trip-stats">
-  <div class="stat">
-    <div class="stat-value">3</div>
-    <div class="stat-label">Cities</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">14</div>
-    <div class="stat-label">Days</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">5</div>
-    <div class="stat-label">Hotels</div>
-  </div>
-</div>
 
 <div class="tabs">
   <div class="tab" data-tab="auckland" data-city="Auckland,nz">
@@ -808,18 +766,19 @@
     // Trigger the click on the appropriate tab
     document.querySelector(`.tab[data-tab="${tabToActivate}"]`).click();
     
-    // Initialize countdown
+    // Initialize countdown if the element exists
     updateCountdown();
     // Update countdown every day
     setInterval(updateCountdown, 86400000);
   });
 
-  // Countdown function
+  // Countdown function with a check for the element
   function updateCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    if (!countdownElement) return;
+    
     const tripStart = new Date("2025-06-15T00:00:00");
     const now = new Date();
-    
-    const countdownElement = document.getElementById('countdown');
     
     if (now >= tripStart && now <= new Date("2025-06-28T23:59:59")) {
       // Trip is ongoing
@@ -837,8 +796,8 @@
   
   // Function to fetch weather data from OpenWeatherMap API
   function fetchWeatherData(city, tabId) {
-    const apiKey = '7d82d7c1c1d2e41dd9aca5a21394f4b7'; // This is a free API key for demo purposes
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+    const apiKey = '7d82d7c1c1d2e41dd9aca5a21394f4b7'; // Free API key for demo purposes
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
     const weatherElement = document.getElementById(`${tabId}-weather`);
     
     weatherElement.innerHTML = `<div class="weather-loading">Loading current weather for ${city.split(',')[0]}...</div>`;
@@ -861,32 +820,32 @@
           '09d': '🌧️', '09n': '🌧️',
           '10d': '🌦️', '10n': '🌧️',
           '11d': '⛈️', '11n': '⛈️',
-'13d': '❄️', '13n': '❄️',
-'50d': '🌫️', '50n': '🌫️'
-};
-const icon = iconMap[iconCode] || '';
-weatherElement.innerHTML = `
-<div class="weather-content">
-  <div class="weather-info">
-    <div class="weather-location">${data.name}</div>
-    <div class="weather-description">${data.weather[0].description}</div>
-  </div>
-  <div class="weather-main">
-    <div class="weather-temp-current">${Math.round(data.main.temp)}°C</div>
-    <div class="weather-icon-large">${icon}</div>
-  </div>
-</div>
-<div class="weather-details">
-  <div class="weather-detail"><i class="fas fa-tint"></i> ${data.main.humidity}%</div>
-  <div class="weather-detail"><i class="fas fa-wind"></i> ${data.wind.speed} m/s</div>
-</div>
-`;
-})
-.catch(error => {
-weatherElement.innerHTML = `<div class="weather-error">Unable to load weather data for ${city.split(',')[0]}.</div>`;
-console.error('Error fetching weather data:', error);
-});
-}
+          '13d': '❄️', '13n': '❄️',
+          '50d': '🌫️', '50n': '🌫️'
+        };
+        const icon = iconMap[iconCode] || '';
+        weatherElement.innerHTML = `
+          <div class="weather-content">
+            <div class="weather-info">
+              <div class="weather-location">${data.name}</div>
+              <div class="weather-description">${data.weather[0].description}</div>
+            </div>
+            <div class="weather-main">
+              <div class="weather-temp-current">${Math.round(data.main.temp)}°C</div>
+              <div class="weather-icon-large">${icon}</div>
+            </div>
+          </div>
+          <div class="weather-details">
+            <div class="weather-detail"><i class="fas fa-tint"></i> ${data.main.humidity}%</div>
+            <div class="weather-detail"><i class="fas fa-wind"></i> ${data.wind.speed} m/s</div>
+          </div>
+        `;
+      })
+      .catch(error => {
+        weatherElement.innerHTML = `<div class="weather-error">Unable to load weather data for ${city.split(',')[0]}.</div>`;
+        console.error('Error fetching weather data:', error);
+      });
+  }
 </script>
 </body>
 </html>
