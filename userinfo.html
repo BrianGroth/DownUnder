@@ -169,8 +169,11 @@
           const lonDMS = convertToDMS(lon, false);
           
           document.getElementById("geoData").innerHTML = `
+            <h3>Decimal Degrees</h3>
             <p><strong>Latitude (decimal):</strong> ${lat}</p>
             <p><strong>Longitude (decimal):</strong> ${lon}</p>
+            <p><strong>Accuracy:</strong> ${accuracy} meters</p>
+            <h3>Degrees, Minutes, Seconds</h3>
             <p><strong>Latitude (DMS):</strong> ${latDMS}</p>
             <p><strong>Longitude (DMS):</strong> ${lonDMS}</p>
             <p><strong>Accuracy:</strong> ${accuracy} meters</p>
