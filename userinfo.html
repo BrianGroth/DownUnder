@@ -78,11 +78,45 @@
         }
 
         getUserInfo();
-    </script>
+
+
+        // Check if geolocation is supported by the browser
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              // Retrieve coordinates and accuracy
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              const accuracy = position.coords.accuracy;
+              
+              // Build and display the message
+              document.getElementById("geoInfo").innerHTML = `
+                <h3>Your Geolocation Information</h3>
+                <p><strong>Latitude:</strong> ${lat}</p>
+                <p><strong>Longitude:</strong> ${lon}</p>
+                <p><strong>Accuracy:</strong> ${accuracy} meters</p>
+              `;
+            },
+            function(error) {
+              // Handle errors (user denied, timeout, etc.)
+              document.getElementById("geoInfo").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
+            }
+          );
+        } else {
+          document.getElementById("geoInfo").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
+        }
+
+</script>
     <hr>
     <form style="text-align: center;"></form>
       <button type="button" onclick="window.location.href='index.html';">OK</button>
     </form>
   
+    <div id="geoInfo">
+        <!-- Your geolocation info will appear here -->
+      </div>
+      
+      
+
 </body>
 </html>
