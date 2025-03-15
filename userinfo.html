@@ -47,12 +47,15 @@
         <p><strong>Timezone:</strong> <span id="timezone"></span></p>
         <p><strong>Online Status:</strong> <span id="online"></span></p>
     </div>
-    <div id="geoInfo">
+    <div id="geoInfo" class="container">
+                <h2>Geolocation Information</h2
         <p>If you allowed this page to have access to your location data, then your browser also shares: </p>
                 <!-- Your geolocation info will appear here -->
-              </div>
+    </div>
               
-        
+  <div id="extraInfo" class="container">
+                <!-- Extra information will appear here -->
+  </div>
     <script>
         function getUserInfo() {
             // Browser Information
@@ -130,7 +133,74 @@
   } else {
     document.getElementById("geoInfo").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
   }
-  
+
+
+  // Container to display extra information
+  const extraInfoDiv = document.getElementById("extraInfo");
+
+  // Timezone information
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // Language information
+  const language = navigator.language;
+  const languages = navigator.languages.join(", ");
+
+  // Display basic locale info immediately
+  extraInfoDiv.innerHTML += `
+    <h3>Locale Information</h3>
+    <p><strong>Timezone:</strong> ${userTimezone}</p>
+    <p><strong>Primary Language:</strong> ${language}</p>
+    <p><strong>All Languages:</strong> ${languages}</p>
+  `;
+
+  // Battery Information (if available)
+  if (navigator.getBattery) {
+    navigator.getBattery().then(battery => {
+      const batteryLevel = (battery.level * 100).toFixed(0);
+      const chargingStatus = battery.charging ? "Yes" : "No";
+      extraInfoDiv.innerHTML += `
+        <h3>Battery Information</h3>
+        <p><strong>Battery Level:</strong> ${batteryLevel}%</p>
+        <p><strong>Charging:</strong> ${chargingStatus}</p>
+      `;
+    });
+  } else {
+    extraInfoDiv.innerHTML += `
+      <h3>Battery Information</h3>
+      <p>Battery API is not supported on your browser.</p>
+    `;
+  }
+
+  // Network Information (if available)
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (connection) {
+    extraInfoDiv.innerHTML += `
+      <h3>Network Information</h3>
+      <p><strong>Effective Connection Type:</strong> ${connection.effectiveType}</p>
+      <p><strong>Downlink:</strong> ${connection.downlink} Mbps</p>
+      <p><strong>Round-trip Time:</strong> ${connection.rtt} ms</p>
+    `;
+  } else {
+    extraInfoDiv.innerHTML += `
+      <h3>Network Information</h3>
+      <p>Network Information API is not supported on your browser.</p>
+    `;
+  }
+
+  // Device Memory and CPU Cores (if available)
+  if (navigator.deviceMemory && navigator.hardwareConcurrency) {
+    extraInfoDiv.innerHTML += `
+      <h3>Device Information</h3>
+      <p><strong>Device Memory:</strong> ${navigator.deviceMemory} GB</p>
+      <p><strong>CPU Cores:</strong> ${navigator.hardwareConcurrency}</p>
+    `;
+  } else {
+    extraInfoDiv.innerHTML += `
+      <h3>Device Information</h3>
+      <p>Additional device info is not supported on your browser.</p>
+    `;
+  }
+
 </script>
       <hr>
       <form style="text-align: center;"></form>
