@@ -77,12 +77,12 @@
   </div>
 
   <!-- Geolocation Information -->
-  <div class="container">
+  <div class="container" id="geoInfo">
     <h2>Geolocation Information</h2>
     <hr>
-  </div class="info-group" id="geoInfo">
-    <!-- Geolocation info will be inserted here -->
-  </div>
+    <div class="info-group" id="geoData">
+      <!-- Geolocation info will be inserted here -->
+    </div>
   </div>
 
   <!-- Device & Connectivity Information -->
@@ -168,7 +168,7 @@
           const latDMS = convertToDMS(lat, true);
           const lonDMS = convertToDMS(lon, false);
           
-          document.getElementById("geoInfo").innerHTML += `
+          document.getElementById("geoData").innerHTML = `
             <p><strong>Latitude (decimal):</strong> ${lat}</p>
             <p><strong>Longitude (decimal):</strong> ${lon}</p>
             <p><strong>Latitude (DMS):</strong> ${latDMS}</p>
@@ -177,11 +177,11 @@
           `;
         },
         function(error) {
-          document.getElementById("geoInfo").innerHTML += `<p>Error fetching geolocation: ${error.message}</p>`;
+          document.getElementById("geoData").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
         }
       );
     } else {
-      document.getElementById("geoInfo").innerHTML += "<p>Geolocation is not supported by your browser.</p>";
+      document.getElementById("geoData").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
     }
 
     // ---------------------------
