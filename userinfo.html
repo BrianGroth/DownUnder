@@ -38,8 +38,6 @@
     </style>
 </head>
 <body>
-    <h1>Your Info</h1>
-
     <div class="container">
         <h2>User Information</h2>
         <p><strong>Browser:</strong> <span id="browser"></span></p>
@@ -49,7 +47,12 @@
         <p><strong>Timezone:</strong> <span id="timezone"></span></p>
         <p><strong>Online Status:</strong> <span id="online"></span></p>
     </div>
-
+    <div id="geoInfo">
+        <p>If you allowed this page to have access to your location data, then your browser also shares: </p>
+                <!-- Your geolocation info will appear here -->
+              </div>
+              
+        
     <script>
         function getUserInfo() {
             // Browser Information
@@ -80,43 +83,61 @@
         getUserInfo();
 
 
-        // Check if geolocation is supported by the browser
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(
-            function(position) {
-              // Retrieve coordinates and accuracy
-              const lat = position.coords.latitude;
-              const lon = position.coords.longitude;
-              const accuracy = position.coords.accuracy;
-              
-              // Build and display the message
-              document.getElementById("geoInfo").innerHTML = `
-                <h3>Your Geolocation Information</h3>
-                <p><strong>Latitude:</strong> ${lat}</p>
-                <p><strong>Longitude:</strong> ${lon}</p>
-                <p><strong>Accuracy:</strong> ${accuracy} meters</p>
-              `;
-            },
-            function(error) {
-              // Handle errors (user denied, timeout, etc.)
-              document.getElementById("geoInfo").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
-            }
-          );
-        } else {
-          document.getElementById("geoInfo").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
-        }
+  // Function to convert decimal degrees to degrees, minutes, seconds format
+  function convertToDMS(coordinate, isLat) {
+    const absolute = Math.abs(coordinate);
+    const degrees = Math.floor(absolute);
+    const minutes = Math.floor((absolute - degrees) * 60);
+    const seconds = (((absolute - degrees) * 60) - minutes) * 60;
+    const roundedSeconds = seconds.toFixed(2);
+    let direction = "";
+    if (isLat) {
+      direction = coordinate >= 0 ? "N" : "S";
+    } else {
+      direction = coordinate >= 0 ? "E" : "W";
+    }
+    return `${degrees}° ${minutes}' ${roundedSeconds}" ${direction}`;
+  }
 
-</script>
-    <hr>
-    <form style="text-align: center;"></form>
-      <button type="button" onclick="window.location.href='index.html';">OK</button>
-    </form>
+  // Check if geolocation is supported by the browser
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        // Retrieve coordinates and accuracy
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        
+        // Convert coordinates to DMS format
+        const latDMS = convertToDMS(lat, true);
+        const lonDMS = convertToDMS(lon, false);
+        
+        // Build and display the message
+        document.getElementById("geoInfo").innerHTML = `
+          <h3>Your Geolocation Information</h3>
+          <p><strong>Latitude (decimal):</strong> ${lat}</p>
+          <p><strong>Longitude (decimal):</strong> ${lon}</p>
+          <p><strong>Latitude (DMS):</strong> ${latDMS}</p>
+          <p><strong>Longitude (DMS):</strong> ${lonDMS}</p>
+          <p><strong>Accuracy:</strong> ${accuracy} meters</p>
+        `;
+      },
+      function(error) {
+        // Handle errors (user denied, timeout, etc.)
+        document.getElementById("geoInfo").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
+      }
+    );
+  } else {
+    document.getElementById("geoInfo").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
+  }
   
-    <div id="geoInfo">
-        <!-- Your geolocation info will appear here -->
-      </div>
-      
-      
+</script>
+      <hr>
+      <form style="text-align: center;"></form>
+        <button type="button" onclick="window.location.href='index.html';">OK</button>
+      </form>
+    
+        
 
 </body>
 </html>
