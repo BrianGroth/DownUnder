@@ -83,6 +83,10 @@
     <div class="info-group" id="geoData">
       <!-- Geolocation info will be inserted here -->
     </div>
+    <div class="info-group" id="mapLink">
+      <h3>Map Link</h3>
+      <p><a id="mapURL" href="#" target="_blank">Open Map</a></p>
+    </div>
   </div>
 
   <!-- Device & Connectivity Information -->
@@ -110,6 +114,9 @@
   </div>
 
   <script>
+    // Global variable to store the OS type for later use
+    let userOS = "Unknown";
+
     // ---------------------------
     // System & Localization Section
     // ---------------------------
@@ -124,6 +131,7 @@
       if (navigator.userAgent.indexOf("Linux") !== -1) os = "Linux";
       if (navigator.userAgent.indexOf("Android") !== -1) os = "Android";
       if (navigator.userAgent.indexOf("like Mac") !== -1) os = "iOS";
+      userOS = os; // Save for later use in the map URL generation
       document.getElementById("os").textContent = os;
       
       // Screen Resolution
@@ -179,6 +187,24 @@
             <p><strong>Longitude (DMS):</strong> ${lonDMS}</p>
             <p><strong>Accuracy:</strong> ${accuracy} meters</p>
           `;
+
+          // Construct dynamic map URL based on OS and coordinates
+          let mapUrl = "";
+          const zoom = 15; // Default zoom level for Android
+
+          if (userOS === "iOS") {
+            mapUrl = `comgooglemaps://?q=${lat},${lon}`;
+          } else if (userOS === "Android") {
+            mapUrl = `geo:${lat},${lon}?z=${zoom}`;
+          } else {
+            // For Windows, MacOS, Linux, and unknown devices, use browser-based Google Maps
+            mapUrl = `http://maps.google.com/?q=${lat},${lon}`;
+          }
+          
+          // Update the map link anchor with the dynamic URL
+          const mapLink = document.getElementById("mapURL");
+          mapLink.href = mapUrl;
+          mapLink.textContent = "Open Map with your location";
         },
         function(error) {
           document.getElementById("geoData").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
