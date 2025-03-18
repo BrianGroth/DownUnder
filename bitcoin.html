@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top 25 Bitcoin Transactions</title>
+  <title>Top 25 Bitcoin Transactions & Price Impact</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,11 +26,15 @@
       font-size: 1.2em;
       color: #555;
     }
+    .impact-negative { background-color: #ffcccc; }
+    .impact-positive { background-color: #ccffcc; }
   </style>
 </head>
 <body>
-  <h1>Top 25 Bitcoin Transactions</h1>
-  <div id="loading" class="loading">Loading...</div>
+  <h2>Top 25 Bitcoin Transactions & Potential Price Impact</h2>
+  <div id="btcPrice">Loading price...</div>
+  <div id="loading" class="loading">Loading transactions...</div>
+
   <table id="transactionsTable" style="display: none;">
     <thead>
       <tr>
@@ -38,65 +42,82 @@
         <th>Transaction Hash</th>
         <th>BTC Amount</th>
         <th>Timestamp</th>
-        <th>Input Addresses</th>
-        <th>Output Addresses</th>
+        <th>Exchange Involved?</th>
+        <th>Potential Impact</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
   <script>
+    const knownExchangeAddresses = [
+      // Sample known exchange addresses (limited sample)
+      "3FkenCiXpSLqD8L79intRNXUgjRoH9sjXa", // Binance
+      "1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s", // Coinbase
+      "bc1qgd82lly7g36stxeqg05kvrfypnkgxhhgyy84yl" // Kraken
+    ];
+
+    async function fetchBitcoinPrice() {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+      const data = await res.json();
+      return data.bitcoin;
+    }
+
+    async function fetchTransactions() {
+      const res = await fetch('https://blockchain.info/unconfirmed-transactions?format=json&cors=true');
+      const data = await res.json();
+      return data.txs;
+    }
+
+    function checkExchangeInvolvement(tx) {
+      const addresses = tx.inputs.map(i => i.prev_out?.addr).concat(tx.out.map(o => o.addr));
+      return addresses.some(addr => knownExchangeAddresses.includes(addr));
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
-      const loadingElement = document.getElementById('loading');
-      const tableElement = document.getElementById('transactionsTable');
-      const tbodyElement = tableElement.querySelector('tbody');
+      const priceEl = document.getElementById('btcPrice');
+      const loadingEl = document.getElementById('loading');
+      const tableEl = document.getElementById('transactionsTable');
+      const tbodyEl = tableEl.querySelector('tbody');
 
       try {
-        // Fetch unconfirmed transactions
-        const response = await fetch('https://blockchain.info/unconfirmed-transactions?format=json&cors=true');
-        const data = await response.json();
+        // Fetch and display BTC price
+        const btcPrice = await fetchBitcoinPrice();
+        priceEl.textContent = `BTC Price: $${btcPrice.usd.toLocaleString()} (24h: ${btcPrice.usd_24h_change.toFixed(2)}%)`;
 
-        // Process transactions
-        const transactions = data.txs.map(tx => {
-          const totalInput = tx.inputs.reduce((sum, input) => sum + (input.prev_out?.value || 0), 0);
-          const totalOutput = tx.out.reduce((sum, output) => sum + (output.value || 0), 0);
-          const btcAmount = Math.max(totalInput, totalOutput) / 1e8; // Convert from satoshis to BTC
-          const timestamp = new Date(tx.time * 1000).toLocaleString(); // Convert UNIX timestamp to human-readable format
-          const inputAddresses = tx.inputs.map(input => input.prev_out?.addr || 'N/A').join(', ');
-          const outputAddresses = tx.out.map(output => output.addr || 'N/A').join(', ');
+        // Fetch transactions
+        const transactions = await fetchTransactions();
 
+        const mappedTx = transactions.map(tx => {
+          const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
           return {
             hash: tx.hash,
             btcAmount,
-            timestamp,
-            inputAddresses,
-            outputAddresses
+            timestamp: new Date(tx.time * 1000).toLocaleString(),
+            exchangeInvolved: checkExchangeInvolvement(tx)
           };
-        });
+        }).sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 25);
 
-        // Sort transactions by BTC amount and select top 25
-        const topTransactions = transactions.sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 25);
+        // Populate table
+        mappedTx.forEach((tx, idx) => {
+          const impact = tx.exchangeInvolved ? (btcPrice.usd_24h_change < 0 ? 'Possible Negative' : 'Possible Positive') : 'Neutral';
+          const rowClass = tx.exchangeInvolved ? (btcPrice.usd_24h_change < 0 ? 'impact-negative' : 'impact-positive') : '';
 
-        // Populate table with transaction data
-        topTransactions.forEach((tx, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${index + 1}</td>
-            <td><a href="https://www.blockchain.com/btc/tx/${tx.hash}" target="_blank">${tx.hash}</a></td>
+          tbodyEl.innerHTML += `<tr class="${rowClass}">
+            <td>${idx + 1}</td>
+            <td><a target="_blank" href="https://www.blockchain.com/btc/tx/${tx.hash}">${tx.hash}</a></td>
             <td>${tx.btcAmount.toFixed(8)} BTC</td>
             <td>${tx.timestamp}</td>
-            <td>${tx.inputAddresses}</td>
-            <td>${tx.outputAddresses}</td>
-          `;
-          tbodyElement.appendChild(row);
+            <td>${tx.exchangeInvolved ? '✅' : '❌'}</td>
+            <td>${impact}</td>
+          </tr>`;
         });
 
-        // Display the table and hide the loading indicator
-        loadingElement.style.display = 'none';
-        tableElement.style.display = 'table';
-      } catch (error) {
-        console.error('Error fetching transaction data:', error);
-        loadingElement.textContent = 'Failed to load data. Please try again later.';
+        loadingEl.style.display = 'none';
+        tableEl.style.display = 'table';
+      } catch (e) {
+        loadingEl.textContent = 'Error loading data.';
+        console.error(e);
       }
     });
   </script>
