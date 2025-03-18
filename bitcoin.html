@@ -39,11 +39,11 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>Transaction Hash</th>
         <th>BTC Amount</th>
         <th>Timestamp</th>
         <th>Exchange Involved?</th>
         <th>Potential Impact</th>
+        <th>Transaction Link</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -51,10 +51,9 @@
 
   <script>
     const knownExchangeAddresses = [
-      // Sample known exchange addresses (limited sample)
-      "3FkenCiXpSLqD8L79intRNXUgjRoH9sjXa", // Binance
-      "1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s", // Coinbase
-      "bc1qgd82lly7g36stxeqg05kvrfypnkgxhhgyy84yl" // Kraken
+      "3FkenCiXpSLqD8L79intRNXUgjRoH9sjXa",
+      "1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s",
+      "bc1qgd82lly7g36stxeqg05kvrfypnkgxhhgyy84yl"
     ];
 
     async function fetchBitcoinPrice() {
@@ -69,11 +68,6 @@
       return data.txs;
     }
 
-    function checkExchangeInvolvement(tx) {
-      const addresses = tx.inputs.map(i => i.prev_out?.addr).concat(tx.out.map(o => o.addr));
-      return addresses.some(addr => knownExchangeAddresses.includes(addr));
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
       const priceEl = document.getElementById('btcPrice');
       const loadingEl = document.getElementById('loading');
@@ -81,35 +75,51 @@
       const tbodyEl = tableEl.querySelector('tbody');
 
       try {
-        // Fetch and display BTC price
         const btcPrice = await fetchBitcoinPrice();
         priceEl.textContent = `BTC Price: $${btcPrice.usd.toLocaleString()} (24h: ${btcPrice.usd_24h_change.toFixed(2)}%)`;
 
-        // Fetch transactions
         const transactions = await fetchTransactions();
 
         const mappedTx = transactions.map(tx => {
           const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
+          const hasKnownExchangeInInputs = tx.inputs.some(i => knownExchangeAddresses.includes(i.prev_out?.addr));
+          const hasKnownExchangeInOutputs = tx.out.some(o => knownExchangeAddresses.includes(o.addr));
+
+          let impact, rowClass;
+
+          if (hasKnownExchangeInInputs && !hasKnownExchangeInOutputs) {
+              impact = 'Likely Positive (Withdrawal)';
+              rowClass = 'impact-positive';
+          } else if (!hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
+              impact = 'Likely Negative (Deposit)';
+              rowClass = 'impact-negative';
+          } else if (hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
+              impact = 'Neutral (Exchange Transfer)';
+              rowClass = '';
+          } else {
+              impact = 'Neutral (P2P Transaction)';
+              rowClass = '';
+          }
+
           return {
-            hash: tx.hash,
-            btcAmount,
-            timestamp: new Date(tx.time * 1000).toLocaleString(),
-            exchangeInvolved: checkExchangeInvolvement(tx)
+              shortHash: tx.hash.substring(0, 10) + '...',
+              fullLink: `https://www.blockchain.com/btc/tx/${tx.hash}`,
+              btcAmount,
+              timestamp: new Date(tx.time * 1000).toLocaleString(),
+              exchangeInvolved: hasKnownExchangeInInputs || hasKnownExchangeInOutputs,
+              impact,
+              rowClass
           };
         }).sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 25);
 
-        // Populate table
         mappedTx.forEach((tx, idx) => {
-          const impact = tx.exchangeInvolved ? (btcPrice.usd_24h_change < 0 ? 'Possible Negative' : 'Possible Positive') : 'Neutral';
-          const rowClass = tx.exchangeInvolved ? (btcPrice.usd_24h_change < 0 ? 'impact-negative' : 'impact-positive') : '';
-
-          tbodyEl.innerHTML += `<tr class="${rowClass}">
+          tbodyEl.innerHTML += `<tr class="${tx.rowClass}">
             <td>${idx + 1}</td>
-            <td><a target="_blank" href="https://www.blockchain.com/btc/tx/${tx.hash}">${tx.hash}</a></td>
             <td>${tx.btcAmount.toFixed(8)} BTC</td>
             <td>${tx.timestamp}</td>
             <td>${tx.exchangeInvolved ? '✅' : '❌'}</td>
-            <td>${impact}</td>
+            <td>${tx.impact}</td>
+            <td><a target="_blank" href="${tx.fullLink}">${tx.shortHash}</a></td>
           </tr>`;
         });
 
