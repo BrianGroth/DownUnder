@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Top 25 Bitcoin Transactions (Recent)</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 30px;">
+  <h2>Top 25 Bitcoin Transactions (Recent Blocks)</h2>
+  <button onclick="loadTopTransactions()">Refresh Transactions</button>
+  <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width:100%; margin-top:20px;">
+    <thead>
+      <tr style="background-color: #f0f0f0;">
+        <th>#</th>
+        <th>Transaction Hash</th>
+        <th>BTC Amount</th>
+      </tr>
+    </thead>
+    <tbody id="txTableBody">
+      <tr><td colspan="3">Loading...</td></tr>
+    </tbody>
+  </table>
+
+<script>
+async function loadTopTransactions() {
+    document.getElementById('txTableBody').innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+
+    // Get the latest block
+    let latestBlockRes = await axios.get('https://blockchain.info/latestblock');
+    let blockHash = latestBlockRes.data.hash;
+
+    // Fetch transactions from recent blocks (let's use last 3 blocks to get a good data set)
+    let transactions = [];
+    for (let i = 0; i < 3; i++) {
+        let blockData = await axios.get(`https://blockchain.info/rawblock/${blockHash}`);
+        transactions = transactions.concat(blockData.data.tx);
+
+        // Get previous block for next iteration
+        blockHash = blockData.data.prev_block;
+    }
+
+    // Map transactions to get total output in BTC
+    let mappedTxs = transactions.map(tx => ({
+        hash: tx.hash,
+        btc: tx.out.reduce((sum, output) => sum + output.value, 0) / 1e8 // convert satoshi to BTC
+    }));
+
+    // Sort by BTC amount descending, get top 25
+    let topTxs = mappedTxs.sort((a, b) => b.btc - a.btc).slice(0, 25);
+
+    // Display transactions
+    let tbody = '';
+    topTxs.forEach((tx, index) => {
+        tbody += `
+          <tr>
+            <td>${index + 1}</td>
+            <td><a href="https://www.blockchain.com/explorer/transactions/btc/${tx.hash}" target="_blank">${tx.hash}</a></td>
+            <td>${tx.btc.toFixed(4)} BTC</td>
+          </tr>`;
+    });
+
+    document.getElementById('txTableBody').innerHTML = tbody;
+}
+
+// Load on page load
+window.onload = loadTopTransactions;
+</script>
+</body>
+</html>
