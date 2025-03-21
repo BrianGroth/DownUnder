@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Top 10 Bitcoin Transactions & Price Impact</title>
   <style>
     body {
@@ -26,8 +26,14 @@
       font-size: 1.2em;
       color: #555;
     }
-    .impact-negative { background-color: #ffcccc; }
-    .impact-positive { background-color: #ccffcc; }
+    .price-increase {
+      color: green;
+    }
+    .price-decrease {
+      color: red;
+    }
+    .impact-significant { background-color: #ffe0b2; } /* Light Orange */
+    .impact-moderate { background-color: #fff3e0; } /* Light Yellow */
   </style>
 </head>
 <body>
@@ -75,87 +81,73 @@
       const tbodyEl = tableEl.querySelector('tbody');
 
       try {
-        // Fetch and display real-time Bitcoin price
-        const btcPrice = await fetchBitcoinPrice();
-        priceEl.textContent = `BTC Price: $${btcPrice.usd.toLocaleString()} (24h: ${btcPrice.usd_24h_change.toFixed(2)}%)`;
-        if (btcPrice.usd_24h_change > 0) {
-          priceEl.style.color = 'green';
-        } else if (btcPrice.usd_24h_change < 0) {
-          priceEl.style.color = 'red';
-        } else {
-          priceEl.style.color = 'black';
+        const btcPriceData = await fetchBitcoinPrice();
+        const currentPrice = btcPriceData.usd.toLocaleString();
+        const change24h = btcPriceData.usd_24h_change;
+        const changePercentage = change24h.toFixed(2);
+
+        priceEl.textContent = `BTC Price: $${currentPrice} (24h: ${changePercentage}%)`;
+        if (change24h > 0) {
+          priceEl.classList.add('price-increase');
+        } else if (change24h < 0) {
+          priceEl.classList.add('price-decrease');
         }
 
-        // Fetch transactions and filter to last 24 hours
         const transactions = await fetchTransactions();
-        const now = Date.now();
-        const last24Hours = 24 * 60 * 60 * 1000;
-        let filteredTx = transactions.filter(tx => (now - (tx.time * 1000)) <= last24Hours);
 
-        // Map transactions to include details for display
-        let mappedTx = filteredTx.map(tx => {
+        const mappedTx = transactions.map(tx => {
           const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
           const hasKnownExchangeInInputs = tx.inputs.some(i => knownExchangeAddresses.includes(i.prev_out?.addr));
           const hasKnownExchangeInOutputs = tx.out.some(o => knownExchangeAddresses.includes(o.addr));
 
-          let location = "";
-          let baseReason = "";
-          let rowClass = "";
-
+          let transactionLocation;
           if (hasKnownExchangeInInputs && !hasKnownExchangeInOutputs) {
-            location = "Out of Exchange";
-            baseReason = "Withdrawal from exchange indicates potential accumulation";
-            rowClass = "impact-positive";
+            transactionLocation = 'Out of Exchange';
           } else if (!hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
-            location = "Into Exchange";
-            baseReason = "Deposit into exchange suggests possible selling pressure";
-            rowClass = "impact-negative";
+            transactionLocation = 'Into Exchange';
           } else if (hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
-            location = "Exchange Transfer";
-            baseReason = "Internal exchange transfer; impact is neutral";
+            transactionLocation = 'Exchange Transfer';
           } else {
-            location = "One-to-One Transfer";
-            baseReason = "Direct peer-to-peer transaction; typically low market impact";
+            transactionLocation = 'One-to-One Transfer';
           }
 
           return {
-            hash: tx.hash,
+            shortHash: tx.hash.substring(0, 10) + '...',
+            fullLink: `https://www.blockchain.com/btc/tx/${tx.hash}`,
             btcAmount,
             timestamp: new Date(tx.time * 1000).toLocaleString(),
-            location,
-            baseReason,
-            rowClass
+            transactionLocation,
           };
-        });
+        }).sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 10);
 
-        // Sort by BTC amount in descending order and take top 10 transactions
-        mappedTx = mappedTx.sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 10);
+        const topAmounts = mappedTx.map(tx => tx.btcAmount);
+        const maxAmount = Math.max(...topAmounts);
+        const minAmount = Math.min(...topAmounts);
+        const range = maxAmount - minAmount;
 
-        // Determine the maximum BTC amount among the top transactions for impact comparison
-        const maxAmount = mappedTx.length > 0 ? mappedTx[0].btcAmount : 0;
-
-        // Update each transaction with a creative potential impact message
-        mappedTx = mappedTx.map(tx => {
-          let potentialImpact = "";
-          if (tx.btcAmount >= 0.8 * maxAmount) {
-            potentialImpact = `Big impact compared to recent transactions: ${tx.baseReason}`;
-          } else if (tx.btcAmount >= 0.5 * maxAmount) {
-            potentialImpact = `Moderate impact: ${tx.baseReason}`;
-          } else {
-            potentialImpact = `Low impact: ${tx.baseReason}`;
-          }
-          return { ...tx, potentialImpact };
-        });
-
-        // Build and display table rows
         mappedTx.forEach((tx, idx) => {
-          tbodyEl.innerHTML += `<tr class="${tx.rowClass}">
+          let impactPhrase = 'Moderate impact on price.';
+          let impactClass = 'impact-moderate';
+          let impactReason = '';
+
+          const normalizedAmount = (tx.btcAmount - minAmount) / range;
+
+          if (normalizedAmount > 0.7) {
+            impactPhrase = 'Big impact compared to recent transactions.';
+            impactClass = 'impact-significant';
+            impactReason = 'This transaction is significantly larger than most of the other top transactions.';
+          } else if (normalizedAmount < 0.3) {
+            impactPhrase = 'Relatively small impact within the top transactions.';
+            impactReason = 'This transaction is on the lower end of the top 10 transactions by volume.';
+          }
+
+          tbodyEl.innerHTML += `<tr class="${impactClass}">
             <td>${idx + 1}</td>
             <td>${tx.btcAmount.toFixed(8)} BTC</td>
             <td>${tx.timestamp}</td>
-            <td>${tx.location}</td>
-            <td>${tx.potentialImpact}</td>
-            <td><a target="_blank" href="https://www.blockchain.com/btc/tx/${tx.hash}">${tx.hash.substring(0, 10)}...</a></td>
+            <td>${tx.transactionLocation}</td>
+            <td>${impactPhrase} <span style="font-size: 0.8em;">(${impactReason})</span></td>
+            <td><a target="_blank" href="${tx.fullLink}">${tx.shortHash}</a></td>
           </tr>`;
         });
 
