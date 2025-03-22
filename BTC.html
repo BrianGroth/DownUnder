@@ -46,6 +46,14 @@
       padding: 0 20px;
     }
     
+    .proxy-select {
+      margin-right: 10px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    
     .price-card {
       background-color: var(--white);
       border-radius: 8px;
@@ -236,6 +244,13 @@
       <div class="header-content">
         <h1>Bitcoin Transaction Monitor</h1>
         <div>
+          <!-- Dropdown for selecting CORS proxy -->
+          <select id="proxySelect" class="proxy-select">
+            <option value="https://thingproxy.freeboard.io/fetch/">Thingproxy</option>
+            <option value="https://api.allorigins.hexocode.repl.co/get?disableCache=true&url=">AllOrigins</option>
+            <option value="https://cors-anywhere.herokuapp.com/">CORS Anywhere</option>
+            <option value="">No Proxy</option>
+          </select>
           <button id="refreshBtn" class="refresh-button">Refresh Data</button>
         </div>
       </div>
@@ -312,7 +327,12 @@
     const HIGH_IMPACT_THRESHOLD = 500; // BTC
     const MEDIUM_IMPACT_THRESHOLD = 100; // BTC
 
-    // Function to fetch Bitcoin price and market data
+    // Helper: Get selected proxy from dropdown
+    function getSelectedProxy() {
+      return document.getElementById('proxySelect').value;
+    }
+
+    // Function to fetch Bitcoin price and market data from CoinGecko
     async function fetchBitcoinMarketData() {
       try {
         const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false');
@@ -329,10 +349,12 @@
       }
     }
 
-    // Function to fetch unconfirmed transactions
+    // Function to fetch unconfirmed transactions using the selected CORS proxy
     async function fetchTransactions() {
       try {
-        const res = await fetch('https://blockchain.info/unconfirmed-transactions?format=json&cors=true');
+        const proxyUrl = getSelectedProxy();
+        const targetUrl = 'https://blockchain.info/unconfirmed-transactions?format=json';
+        const res = await fetch((proxyUrl ? proxyUrl : "") + targetUrl);
         const data = await res.json();
         return data.txs;
       } catch (error) {
@@ -341,10 +363,12 @@
       }
     }
 
-    // Function to fetch transaction details
+    // Function to fetch transaction details using the selected CORS proxy
     async function fetchTransactionDetails(txHash) {
       try {
-        const res = await fetch(`https://blockchain.info/rawtx/${txHash}?cors=true`);
+        const proxyUrl = getSelectedProxy();
+        const targetUrl = `https://blockchain.info/rawtx/${txHash}`;
+        const res = await fetch((proxyUrl ? proxyUrl : "") + targetUrl);
         const data = await res.json();
         return data;
       } catch (error) {
@@ -353,17 +377,15 @@
       }
     }
 
-    // Function to identify wallet age based on transaction history
+    // Function to identify wallet age based on transaction history (simulated)
     function identifyWalletAge(inputs) {
-      // This would ideally call an API to get wallet age - simulating here
-      // Randomly assign wallet ages for demonstration purposes
       const ages = ['New (<1 month)', '1-3 months', '3-12 months', '1-3 years', '3+ years'];
       return ages[Math.floor(Math.random() * ages.length)];
     }
 
     // Function to determine transaction type and significance
     function analyzeTransaction(tx, btcPrice) {
-      // Calculate total BTC amount
+      // Calculate total BTC amount (values in satoshis)
       const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
       
       // Identify addresses involved
@@ -377,11 +399,9 @@
       
       // Check if exchange addresses are involved
       const involvedExchanges = new Set();
-      
       for (const [exchange, addresses] of Object.entries(exchangeData)) {
         const inputMatches = inputAddresses.some(addr => addresses.includes(addr));
         const outputMatches = outputAddresses.some(addr => addresses.includes(addr));
-        
         if (inputMatches || outputMatches) {
           involvedExchanges.add(exchange);
         }
@@ -390,14 +410,10 @@
       // Determine transaction type
       let transactionType = 'Wallet Transfer';
       let transactionBadge = 'badge-transfer';
-      
       if (involvedExchanges.size > 0) {
         const exchangesList = Array.from(involvedExchanges).join(', ');
-        
-        // Check exchange flow direction
         const inputExchange = inputAddresses.some(addr => allExchangeAddresses.includes(addr));
         const outputExchange = outputAddresses.some(addr => allExchangeAddresses.includes(addr));
-        
         if (inputExchange && !outputExchange) {
           transactionType = `Withdrawal from ${exchangesList}`;
           transactionBadge = 'badge-exchange';
@@ -417,9 +433,7 @@
       let marketImpact = 'Low impact';
       let impactClass = 'impact-low';
       let impactDetail = 'Unlikely to affect market price.';
-      
       const usdValue = btcAmount * btcPrice;
-      
       if (btcAmount >= HIGH_IMPACT_THRESHOLD) {
         marketImpact = 'High impact';
         impactClass = 'impact-high';
@@ -430,7 +444,7 @@
         impactDetail = `Significant movement of ${btcAmount.toFixed(2)} BTC could affect short-term price.`;
       }
       
-      // Analyze wallet age for significant transactions
+      // Analyze wallet age (simulated)
       const walletAge = identifyWalletAge(tx.inputs);
       
       return {
@@ -462,10 +476,7 @@
       const txCountEl = document.getElementById('txCount');
       const averageTxSizeEl = document.getElementById('averageTxSize');
       
-      // Clear previous data
       tbodyEl.innerHTML = '';
-      
-      // Update last updated timestamp
       const now = new Date();
       lastUpdatedEl.textContent = `Last updated: ${now.toLocaleString()}`;
       
@@ -475,10 +486,8 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         });
-        
         const priceChangeClass = marketData.priceChange24h >= 0 ? 'price-increase' : 'price-decrease';
         const priceChangeSign = marketData.priceChange24h >= 0 ? '+' : '';
-        
         btcPriceEl.innerHTML = `
           <div style="display: flex; align-items: center; gap: 10px;">
             <span style="font-size: 2rem; font-weight: bold;">$${formattedPrice}</span>
@@ -500,51 +509,39 @@
         return;
       }
       
-      // Analyze transactions
+      // Analyze and sort transactions
       const analyzedTransactions = transactions.map(tx => 
         analyzeTransaction(tx, marketData ? marketData.price : 65000)
-      );
+      ).sort((a, b) => b.btcAmount - a.btcAmount);
       
-      // Sort by BTC amount
-      analyzedTransactions.sort((a, b) => b.btcAmount - a.btcAmount);
-      
-      // Get top significant transactions
+      // Filter for significant transactions (e.g., ≥ 10 BTC) and take top 10
       const significantTransactions = analyzedTransactions
-        .filter(tx => tx.btcAmount >= 10) // Only show significant transactions
+        .filter(tx => tx.btcAmount >= 10)
         .slice(0, 10);
       
-      // Update statistics
+      // Update statistics if available
       if (significantTransactions.length > 0) {
         const largest = significantTransactions[0];
         largestTxEl.textContent = `${largest.btcAmount.toFixed(2)} BTC`;
         largestTxUsdEl.textContent = `$${largest.usdValue.toLocaleString()}`;
         
-        // Analyze exchange flows
-        const exchangeTransactions = analyzedTransactions.filter(tx => 
-          tx.involvedExchanges.length > 0
-        );
-        
+        // Calculate exchange flows
+        const exchangeTransactions = analyzedTransactions.filter(tx => tx.involvedExchanges.length > 0);
         const inflows = exchangeTransactions
           .filter(tx => tx.transactionType.includes('Deposit'))
           .reduce((sum, tx) => sum + tx.btcAmount, 0);
-        
         const outflows = exchangeTransactions
           .filter(tx => tx.transactionType.includes('Withdrawal'))
           .reduce((sum, tx) => sum + tx.btcAmount, 0);
-        
         const netFlow = inflows - outflows;
         const netFlowClass = netFlow >= 0 ? 'price-increase' : 'price-decrease';
         const netFlowSign = netFlow >= 0 ? '+' : '';
-        
         exchangeFlowEl.innerHTML = `<span class="${netFlowClass}">${netFlowSign}${Math.abs(netFlow).toFixed(2)} BTC</span>`;
         exchangeFlowDetailsEl.innerHTML = `In: ${inflows.toFixed(2)} BTC | Out: ${outflows.toFixed(2)} BTC`;
         
-        // Transaction statistics
         txCountEl.textContent = transactions.length.toString();
-        
         const totalBtc = analyzedTransactions.reduce((sum, tx) => sum + tx.btcAmount, 0);
         const avgTxSize = totalBtc / transactions.length;
-        
         averageTxSizeEl.textContent = `Avg. size: ${avgTxSize.toFixed(2)} BTC`;
       }
       
@@ -552,9 +549,7 @@
       significantTransactions.forEach(tx => {
         const row = document.createElement('tr');
         row.className = tx.impactClass;
-        
         const timeAgo = getTimeAgo(tx.timestamp);
-        
         row.innerHTML = `
           <td>
             <div class="btc-amount">${tx.btcAmount.toFixed(4)} BTC</div>
@@ -576,19 +571,16 @@
             </a>
           </td>
         `;
-        
         tbodyEl.appendChild(row);
       });
       
-      // Show the table
       loadingEl.style.display = 'none';
       tableEl.style.display = 'table';
     }
 
-    // Helper function to format time ago
+    // Helper function to display relative time
     function getTimeAgo(timestamp) {
       const seconds = Math.floor((new Date() - timestamp) / 1000);
-      
       if (seconds < 60) return `${seconds} seconds ago`;
       if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
       if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
@@ -600,7 +592,6 @@
       const loadingEl = document.getElementById('loading');
       loadingEl.style.display = 'block';
       loadingEl.textContent = 'Loading transactions...';
-      
       document.getElementById('transactionsTable').style.display = 'none';
       
       try {
@@ -608,7 +599,6 @@
           fetchBitcoinMarketData(),
           fetchTransactions()
         ]);
-        
         updateUI(transactions, marketData);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -616,11 +606,9 @@
       }
     }
 
-    // Initialize the page
+    // Initialize the page and set up refresh button handler
     document.addEventListener('DOMContentLoaded', () => {
       loadData();
-      
-      // Add refresh button handler
       document.getElementById('refreshBtn').addEventListener('click', loadData);
     });
   </script>
