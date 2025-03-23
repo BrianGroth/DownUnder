@@ -551,6 +551,7 @@
       
       // Save the active tab preference to localStorage
       localStorage.setItem('activeTab', tab.dataset.tab);
+      
     });
   });
 
@@ -581,9 +582,6 @@
     updateCountdown();
     // Update countdown every day
     setInterval(updateCountdown, 86400000);
-    
-    // Update map links to use platform-specific URL schemes
-    updateMapLinks();
   });
 
   // Countdown function with a check for the element
@@ -608,25 +606,6 @@
     }
   }
   
-  // Function to update Google Maps links based on the user's platform
-  function updateMapLinks() {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isAndroid = /android/i.test(userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    // Select anchors with Google Maps URLs
-    const links = document.querySelectorAll('a[href*="maps.app.goo.gl"]');
-    
-    links.forEach(link => {
-      const originalHref = link.href;
-      if (isAndroid) {
-        // For Android, use the geo: scheme with a query parameter
-        link.href = "geo:0,0?q=" + encodeURIComponent(originalHref);
-      } else if (isIOS) {
-        // For iOS, use the comgooglemaps:// scheme with a query parameter
-        link.href = "comgooglemaps://?q=" + encodeURIComponent(originalHref);
-      }
-    });
-  }
 </script>
 </body>
 </html>
