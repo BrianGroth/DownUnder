@@ -342,7 +342,7 @@
     <div class="day">
       <h3>Sunday, June 15</h3>
       <ul class="activities">
-        <li class="adventure"><span class="time">Arrivals!</span> - (B&L after 12:00)</li>
+        <li class="adventure"><span class="time">Arrivals!</span> - (B&L arrive after 12:00)</li>
         <li class="meal"><span class="time">TBD</span> - Family Dinner</li>
       </ul>
     </div>
@@ -380,19 +380,19 @@
       <h3 class="hotel">Hotels</h3>
       <div class="hotel-details">
         <div class="hotel-name">InterContinental Auckland</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/S7GRASE7yRUtjE3E7">1 Queen Street, Auckland NZ 1010</a></div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/S7GRASE7yRUtjE3E7" data-address="1 Queen Street, Auckland NZ 1010">1 Queen Street, Auckland NZ 1010</a></div>
         <div class="hotel-phone">+64 0 9304 0040</div>
       </div>
       
       <div class="hotel-details">
         <div class="hotel-name">Pullman Rotorua</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/NqQnqt4VpAaynmsV8">1135 Arawa St - 3010 Rotorua - New Zealand</a></div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/NqQnqt4VpAaynmsV8" data-address="1135 Arawa St., 3010 Rotorua, New Zealand">1135 Arawa St - 3010 Rotorua - New Zealand</a></div>
         <div class="hotel-phone">+64 7343 9750</div>
       </div>
       
       <div class="hotel-details">
         <div class="hotel-name">Pullman Auckland Airport</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/LoJiZEXFGjawtMtH7">Auckland International Airport, 37 Tom Pearce Drive, Auckland Airport - 2022 Auckland - New Zealand</a></div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/LoJiZEXFGjawtMtH7" data-address="Auckland International Airport, 37 Tom Pearce Drive, Auckland Airport, 2022 Auckland, New Zealand">Auckland International Airport, 37 Tom Pearce Drive, Auckland Airport - 2022 Auckland - New Zealand</a></div>
         <div class="hotel-phone">+64 9 2567901</div>
       </div>
     </div>      
@@ -448,7 +448,7 @@
       <h3 class="hotel">Hotel</h3>
       <div class="hotel-details">
         <div class="hotel-name">Ovolo Woolloomooloo</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/kfCXqwUkFe3C2nKi6">6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</a></div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/kfCXqwUkFe3C2nKi6" data-address="6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia">6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</a></div>
         <div class="hotel-phone">+61 2 9331 9000</div>
       </div>
     </div>
@@ -494,7 +494,7 @@
     <div class="day">
       <h3>Friday, June 27</h3>
       <ul class="activities">
-        <li class="adventure"><span class="time">9:00</span> - Visit <a href="https://maps.app.goo.gl/eSWWoBUJrNnDDoo3A?">Kuranda</a></li>
+        <li class="adventure"><span class="time">9:00</span> - Visit <a href="https://maps.app.goo.gl/eSWWoBUJrNnDDoo3A?" data-address="Kuranda Scenic Railway">Kuranda</a></li>
         <li class="meal"><span class="time">6:00 PM</span> - Family Dinner</li>
       </ul>
     </div>
@@ -510,7 +510,7 @@
       <h3 class="hotel">Hotel</h3>
       <div class="hotel-details">
         <div class="hotel-name">Shangri-La The Marina, Cairns</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/oAYyaphBPhWc7cYL9">Pier Point Road, Cairns Queensland 4870</a></div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/oAYyaphBPhWc7cYL9" data-address="Pier Point Road, Cairns Queensland 4870">Pier Point Road, Cairns Queensland 4870</a></div>
         <div class="hotel-phone">+61 7 4052 7500</div>
       </div>
     </div>
@@ -608,7 +608,7 @@
     }
   }
   
-// Function to update Google Maps links based on the user's platform
+// Function to update Google Maps links based on the user's platform using a data-address attribute
 function updateMapLinks() {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   const isAndroid = /android/i.test(userAgent);
@@ -617,16 +617,22 @@ function updateMapLinks() {
   const links = document.querySelectorAll('a[href*="maps.app.goo.gl"]');
 
   links.forEach(link => {
-    const originalHref = link.href;
+    // Retrieve the actual address from a custom data attribute
+    const address = link.dataset.address;
+    if (!address) {
+      // If no address is provided, do not modify the link
+      return;
+    }
     if (isAndroid) {
-      // For Android, use the geo: scheme
-      link.href = "geo:0,0?q=" + encodeURI(originalHref);
+      // For Android, use the geo: scheme with the address query
+      link.href = "geo:0,0?q=" + encodeURIComponent(address);
     } else if (isIOS) {
-      // For iOS, use the comgooglemaps:// scheme
-      link.href = "comgooglemaps://?q=" + encodeURI(originalHref);
+      // For iOS, use the comgooglemaps:// scheme with the address query
+      link.href = "comgooglemaps://?q=" + encodeURIComponent(address);
     }
   });
 }
+
 
 </script>
 </body>
