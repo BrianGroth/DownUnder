@@ -608,25 +608,26 @@
     }
   }
   
-  // Function to update Google Maps links based on the user's platform
-  function updateMapLinks() {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isAndroid = /android/i.test(userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    // Select anchors with Google Maps URLs
-    const links = document.querySelectorAll('a[href*="maps.app.goo.gl"]');
-    
-    links.forEach(link => {
-      const originalHref = link.href;
-      if (isAndroid) {
-        // For Android, use the geo: scheme with a query parameter
-        link.href = "geo:0,0?q=" + encodeURIComponent(originalHref);
-      } else if (isIOS) {
-        // For iOS, use the comgooglemaps:// scheme with a query parameter
-        link.href = "comgooglemaps://?q=" + encodeURIComponent(originalHref);
-      }
-    });
-  }
+// Function to update Google Maps links based on the user's platform
+function updateMapLinks() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const isAndroid = /android/i.test(userAgent);
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  // Select anchors with Google Maps URLs
+  const links = document.querySelectorAll('a[href*="maps.app.goo.gl"]');
+
+  links.forEach(link => {
+    const originalHref = link.href;
+    if (isAndroid) {
+      // For Android, use the geo: scheme
+      link.href = "geo:0,0?q=" + encodeURI(originalHref);
+    } else if (isIOS) {
+      // For iOS, use the comgooglemaps:// scheme
+      link.href = "comgooglemaps://?q=" + encodeURI(originalHref);
+    }
+  });
+}
+
 </script>
 </body>
 </html>
