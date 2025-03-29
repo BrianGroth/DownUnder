@@ -72,19 +72,20 @@
     }
     
     .tab {
-      flex: 1;
-      padding: 15px 5px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--dark-text);
-      position: relative;
-      overflow: hidden;
+    flex: 1;
+    padding: 15px 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-text);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.05); /* Add this line to shade inactive tabs */
     }
     
     .tab i {
@@ -93,12 +94,13 @@
     }
     
     .tab:hover {
-      background-color: rgba(0,0,0,0.05);
+      background-color: rgba(0,0,0,0.02); /* Lighter shade on hover */
     }
     
     .tab.active {
       color: var(--primary-color);
-      background-color: var(--white);
+    background-color: var(--white); /* Keep active tab white */
+    box-shadow: var(--shadow);
     }
     
     .tab.active::after {
@@ -426,7 +428,7 @@
       <h3>Saturday, June 21</h3>
       <ul class="activities">
         <li class="adventure"><span class="time">8:00</span> - Nature Tour</li>
-        <li class="adventure"><span class="time">TBD?</span> - <a href="https://www.sydneyoperahouse.com/tours">Sydney Opera House</a></li>
+        <li class="adventure"><span class="time">7:00pm</span> - <a href="https://www.sydneyoperahouse.com/tours">Sydney Opera House</a></li>
       </ul>
     </div>
     
