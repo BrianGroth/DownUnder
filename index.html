@@ -557,7 +557,9 @@
   });
 
   // Choose the correct default tab based on date or previous selection
-  document.addEventListener('DOMContentLoaded', () => {
+  // Replace the existing DOMContentLoaded event listener with this updated version:
+
+document.addEventListener('DOMContentLoaded', () => {
     // Check if there's a saved tab preference
     const savedTab = localStorage.getItem('activeTab');
     
@@ -567,17 +569,30 @@
 
     // Determine default tab based on trip dates
     if (now >= new Date("2025-06-19T00:00:00")) {
-      defaultTab = "sydney";
+        defaultTab = "sydney";
     }
     if (now >= new Date("2025-06-23T00:00:00")) {
-      defaultTab = "cairns";
+        defaultTab = "cairns";
     }
 
     // Use saved preference if available, otherwise use date-based default
     const tabToActivate = savedTab || defaultTab;
     
-    // Trigger the click on the appropriate tab
-    document.querySelector(`.tab[data-tab="${tabToActivate}"]`).click();
+    // Get the tab element
+    const activeTab = document.querySelector(`.tab[data-tab="${tabToActivate}"]`);
+    
+    if (activeTab) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to selected tab and content
+        activeTab.classList.add('active');
+        const content = document.getElementById(tabToActivate);
+        if (content) {
+            content.classList.add('active');
+        }
+    }
     
     // Initialize countdown if the element exists
     updateCountdown();
@@ -586,29 +601,7 @@
     
     // Update map links to use platform-specific URL schemes
     updateMapLinks();
-  });
-
-  // Countdown function with a check for the element
-  function updateCountdown() {
-    const countdownElement = document.getElementById('countdown');
-    if (!countdownElement) return;
-    
-    const tripStart = new Date("2025-06-15T00:00:00");
-    const now = new Date();
-    
-    if (now >= tripStart && now <= new Date("2025-06-28T23:59:59")) {
-      // Trip is ongoing
-      const tripDay = Math.floor((now - tripStart) / (1000 * 60 * 60 * 24)) + 1;
-      countdownElement.innerHTML = `<span style="color:#ff8a65">🎉 Day ${tripDay} of your adventure! 🎉</span>`;
-    } else if (now < tripStart) {
-      // Trip is in the future
-      const daysToGo = Math.ceil((tripStart - now) / (1000 * 60 * 60 * 24));
-      countdownElement.textContent = `${daysToGo} days until your adventure begins!`;
-    } else {
-      // Trip is in the past
-      countdownElement.textContent = `Your adventure has concluded!`;
-    }
-  }
+});
   
 // Function to update Google Maps links based on the user's platform using a data-address attribute
 function updateMapLinks() {
