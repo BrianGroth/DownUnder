@@ -556,6 +556,29 @@
     });
   });
 
+
+// Firgure out which tab to default to
+
+  function updateCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    if (!countdownElement) return;
+
+    const tripStart = new Date("2025-06-15T00:00:00");
+    const now = new Date();
+    
+    if (now >= tripStart) {
+        countdownElement.textContent = "Trip in progress!";
+        return;
+    }
+    
+    const diff = tripStart - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    countdownElement.textContent = `${days} days, ${hours} hours until the adventure begins!`;
+}
+
+
   // Choose the correct default tab based on date or previous selection
   // Replace the existing DOMContentLoaded event listener with this updated version:
 
@@ -594,8 +617,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Initialize countdown if the element exists
-    updateCountdown();
     // Update countdown every day
     setInterval(updateCountdown, 86400000);
     
