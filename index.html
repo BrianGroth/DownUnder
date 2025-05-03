@@ -663,6 +663,17 @@ function updateMapLinks() {
 }
 
 
+  // Function to toggle the visibility of details content
+  function toggleDetails(button) {
+    const detailsContent = button.nextElementSibling;
+    if (detailsContent.style.display === "none") {
+      detailsContent.style.display = "block";
+      button.textContent = "▲"; // Change button text to indicate collapse
+    } else {
+      detailsContent.style.display = "none";
+      button.textContent = "▼"; // Change button text to indicate expand
+    }
+  }
 </script>
 </body>
 </html>
