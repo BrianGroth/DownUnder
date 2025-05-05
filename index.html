@@ -7,18 +7,35 @@
 
   <!-- Site CSS copied from MainContent.html -->
   <style>
-    /* Base & layout */
-    body {
-      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: #333333;
-      line-height: 1.6;
-      max-width: 760px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      background-color: #fafafa;
+    :root {
+      --primary-color: #0077cc;
+      --secondary-color: #00a896;
+      --accent-color: #f4a261;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
     }
-    a { color: #0a9396; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      padding-bottom: 60px; /* Space for footer */
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
 
     
     header {
