@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Down Under Adventure</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #0077cc;
+      --secondary-color: #00a896;
+      --accent-color: #f4a261;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      padding-bottom: 60px; /* Space for footer */
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
+      padding: 5px;
+      text-align: center;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-bottom: 5px;
+      box-shadow: var(--shadow);
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+    
+    .subtitle {
+      font-style: italic;
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+    
+    .tabs {
+      display: flex;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+    }
+    
+    .tab {
+    flex: 1;
+    padding: 15px 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-text);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.05); /* Add this line to shade inactive tabs */
+    }
+    
+    .tab i {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+    
+    .tab:hover {
+      background-color: rgba(0,0,0,0.02); /* Lighter shade on hover */
+    }
+    
+    .tab.active {
+      color: var(--primary-color);
+    background-color: var(--white); /* Keep active tab white */
+    box-shadow: var(--shadow);
+    }
+    
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .content {
+      display: none;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.3s ease-in-out;
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    .content.active {
+      display: block;
+    }
+    
+    .tab-image {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background-color: #ddd;
+    }
+    
+    .tab-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .tab-image:hover img {
+      transform: scale(1.05);
+    }
+    
+    .location-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: white;
+      padding: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    
+    .itinerary {
+      padding: 20px;
+    }
+    
+    .day {
+      margin-bottom: 25px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+    
+    .day:last-child {
+      border-bottom: none;
+    }
+    
+    .day h3 {
+      margin: 0 0 15px;
+      color: var(--primary-color);
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+    }
+    
+    .day h3::before {
+      content: '📅';
+      margin-right: 8px;
+    }
+    
+    .day h3.hotel::before {
+      content: '🏨';
+    }
+    
+    .activities {
+      list-style: none;
+    }
+    
+    .activities li {
+      padding: 10px 15px;
+      margin-bottom: 8px;
+      background-color: var(--light-bg);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .activities li:hover {
+      transform: translateX(5px);
+      box-shadow: var(--shadow);
+    }
+    
+    .activities li.hotel { border-left: 4px solid #7986cb; }
+    .activities li.meal { border-left: 4px solid #ff8a65; }
+    .activities li.flight { border-left: 4px solid #4fc3f7; }
+    .activities li.adventure { border-left: 4px solid #81c784; }
+     
+    /* .activities li.hotel::before { content: "💤 "; } */
+    /* .activities li.meal::before { content: "🍽️ "; } */
+    /* .activities li.flight::before { content: "✈️ "; } */
+    /* .activities li.adventure::before { content: "🌍 "; } */
+    
+    .time {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .hotel-details {
+      background-color: var(--light-bg);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      margin-top: 10px;
+    }
+    
+    .hotel-name {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+    
+    .hotel-address, .hotel-phone {
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    
+    footer {
+      background-color: var(--white);
+      padding: 15px;
+      text-align: center;
+      font-size: 0.9em;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-top: 20px;
+    }
+    
+    footer p {
+      margin: 5px 0;
+    }
+    
+    footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    footer a:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+    
+    .footer-divider {
+      margin: 10px 0;
+      border: 0;
+      border-top: 1px solid #eee;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .footer-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .countdown {
+      text-align: center;
+      margin: 1px 0;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+        
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .tab span {
+        font-size: 0.9em;
+      }
+      
+      .location-title {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Down Under Adventure</h1>
+
+  <!-- Countdown element is commented out to suit your design;
+       updateCountdown now checks for its existence before updating. -->
+  <div class="countdown" id="countdown"></div>
+</header>
+
+<div class="tabs">
+  <div class="tab" data-tab="auckland" data-city="Auckland,nz">
+    <i class="fas fa-mountain"></i>
+    <span>Auckland</span>
+  </div>
+  <div class="tab" data-tab="sydney" data-city="Sydney,au">
+    <i class="fas fa-city"></i>
+    <span>Sydney</span>
+  </div>
+  <div class="tab" data-tab="cairns" data-city="Cairns,au">
+    <i class="fas fa-water"></i>
+    <span>Cairns</span>
+  </div>
+</div>
+
+<!-- Auckland Content -->
+<div class="content" id="auckland">
+  <div class="tab-image">
+    <img src="aucklandimage.jpg" alt="Auckland Skyline">
+    <div class="location-title">Auckland, New Zealand</div>
+  </div>
+  
+  <div class="itinerary">
+    <div class="day">
+      <h3>Sunday, June 15</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">Arrivals!</span> - (B&L arrive after 12:00)</li>
+        <li class="hotel"><span class="time">15:00</span> - <b>Intercontinental</b> check-in</li>
+        <li class="meal"><span class="time">18:00</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Monday, June 16</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">13:00</span> - Lunch @ <a href="https://afm.co.nz/">Fish Market</a></li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Tuesday, June 17</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">8:00</span> - Taxi to Pullman Airport</li>
+        <li class="adventure"><span class="time">9:00</span> - Pick-up for <a href="Auckland - 2 Day Big Tour.pdf">Rotorua Tour</a> (Day 1)
+        <li class="adventure"><span class="time">12:00</span> - Arrive <a href="https://www.waitomo.com/glowworms-and-caves/waitomo-glowworm-caves">Waitomo</a> (drive 2.5 hrs)
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;">           
+          Tour the Waitomo Glowworm Caves (1 hour) and lunch @ <a href="https://www.thegeneralstorewaitomo.co.nz/">12 Tables</a> (45 min)<br>
+        <li class="hotel"><span class="time">16:00</span> - Arrive <b>Pullman Rotorua</b> (drive 2 hrs)</li>
+        <li class="adventure"><span class="time">18:00</span> - Dinner @ <a href="https://www.mitai.co.nz/mitai-maori-cultural-experience-nz/">Maori Experience</a>
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;">           
+         Mitai bus departs at 17:15 to the Mitai Maori Village or it is a 10 min walk. After the <i>Mitai Māori Cultural Experience & Dinner Buffet</i> (3 hrs), we can walk or take the Mitai bus back to the hotel.
+        </div>
+      </li>
+    </ul>
+    </div>
+         
+    <div class="day">
+      <h3>Wednesday, June 18</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">9:30</span> - Pick-up for <a href="Auckland - 2 Day Big Tour.pdf">Rotorua Tour</a> (Day 2)</li>
+        <li class="adventure"><span class="time">10:00</span> - Arrive <a href="https://www.waiotapu.co.nz/">Wai–O Tapu</a> (drive 25 min)
+         <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+         <div class="details-content" style="display: none;">           
+           Tour the Wai-O Tapu Thermal Wonderland for 90 minutes<br>
+         </div>
+        </li>
+       <li class="adventure"><span class="time">13:00</span> - Arrive <a href="https://www.hobbitontours.com/">Hobbiton</a> (drive 1.5 hrs)
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;">           
+          We have 1 hour for lunch before our <b>14:10 tour</b> (golf cart requested if needed). We depart Hobbiton at 16:45<br>
+        </div>
+       </li>
+        <li class="hotel"><span class="time">19:30</span> - Arrive <b>Pullman Airport</b> (drive 2 hrs)</li>
+    </ul>
+    </div>
+
+    <div class="day">
+      <h3>Thursday, June 19</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">6:45</span> - Taxi to Auckland airport</li>
+        <li class="flight"><span class="time">9:00</span> - <b>Air NZ 103</b> (A320 Neo) 
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+             Booking Reference: CXAKCH (Groth) or X8MCUH (Irwin) for the parents
+          </div>
+         </li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <h3 class="hotel">Hotels</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">InterContinental Auckland</div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/S7GRASE7yRUtjE3E7" data-address="1 Queen Street, Auckland NZ 1010">1 Queen Street, Auckland</a></div>
+        <div class="hotel-phone">+64 0 9304 0040</div>
+      </div>
+      <div class="hotel-details">
+        <div class="hotel-name">Pullman Rotorua</div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/NqQnqt4VpAaynmsV8" data-address="1135 Arawa St., 3010 Rotorua, New Zealand">1135 Arawa Street, Rotorua</a></div>
+        <div class="hotel-phone">+64 7343 9750</div>
+      </div>
+      
+      <div class="hotel-details">
+        <div class="hotel-name">Pullman Auckland Airport</div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/LoJiZEXFGjawtMtH7" data-address="Auckland International Airport, 37 Tom Pearce Drive">37 Tom Pearce Drive</a></div>
+        <div class="hotel-phone">+64 9 2567901</div>
+      </div>
+    </div>      
+  </div>
+</div>
+
+<!-- Sydney Content -->
+<div class="content" id="sydney">
+  <div class="tab-image">
+    <img src="sydneyimage.jpg" alt="Sydney Opera House">
+    <div class="location-title">Sydney, Australia</div>
+  </div>
+  
+  <div class="itinerary">
+   <div class="day">
+      <h3>Thursday, June 19</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">15:00</span> - <b>Ovooloo Wooloomooloo</b> check-in</li>        
+        <li class="meal">
+          <span class="time">18:00</span> - Dinner @ <a href="https://ottoristorante.com.au/sydney/">OTTO Ristorante</a> 
+          <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            w/ Chris & Candy<br>
+            <a href="https://maps.app.goo.gl/HeoExCu6vKDD247u8" data-address="Area 8, 6 Cowper Wharf Road, Wooloomooloo">
+            Area 8, 6 Cowper Wharf Road, Woolloomooloo
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Friday, June 20</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">9:00</span> - <a href="Sydney - Jewish Heritage Tour.pdf">Jewish Heritage Tour</a>
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            4-hour tour includes stops at top Jewish spots in Sydney, including the Big Kitchen, Synagogue, and Jewish hot spots. May include the Jewish Museum. Check in at the Ocean Free & Ocean Freedom desk inside the Reef Fleet Terminal in Marlin Marina Cairns from 7:15 AM. . . After checkin, board the boat from 7:30 AM at A Finger No 5 Marlin Marina for an 8 AM departure. 
+          </div>
+         </li>
+        <li class="meal"><span class="time">13:00</span> - Lunch @ <a href="https://www.sydneyfishmarket.com.au/">Sydney Fish Market</a></li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Saturday, June 21</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:30</span> - Pick-up for <a href="https://bluemountainstours.com.au/blue-mountains-private-day-tour/">Blue Mountain Tour</a>
+          <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            Tour includes stops at <a href="https://www.featherdale.com.au/">Featherdale Wildlife Park</a> to meet kangaroos, koalas, and more, lunch as well as <a href="https://www.scenicworld.com.au/">Scenic World</a> where we can see the<a href="https://www.nationalparks.nsw.gov.au/things-to-do/walking-tracks/three-sisters-walk">Three Sisters</a> natural rock formation. 
+          </div>
+         </li>
+        <li class="adventure"><span class="time">16:30</span> - Return to <b>Ovolo Wooloomooloo</b></li>
+        <li class="adventure"><span class="time">19:00</span> - <a href="https://www.sydneyoperahouse.com/sydney-symphony-orchestra/2025-season/signature-choir-sydney-symphony">Sydney Opera House</a>         
+         <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            We are seeing <i>Mana Moana – Spirit of the ocean</i> which is performed by the Signature Choir and Sydney Symphony. <a href="">TICKETS</a> 
+          </div>
+        </li>  
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Sunday, June 22</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">10:00</span> - Go to <a href="https://taronga.org.au/sydney-zoo">Taronga Zoo</a>       
+         <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            Taxi takes about 20 min (w/out traffic) and we can return via the <a href="https://www.fantasea.com.au/timetable/">Sydney Harbour Hopper</a> ferry and walk (30 min) through Botanical garden back to the hotel. <a href="Tickets/TarongaZoo-22June.pdf">TICKETS</a>
+          </div>
+        </li>  
+</ul>
+    </div>
+    
+    <div class="day">
+      <h3>Monday, June 23</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">6:45</span> - Taxi to Sydney airport</li>
+        <li class="flight"><span class="time">9:45</span> - <b>Qantas 922</b> (737-800) 
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+             Booking Reference: 6V4LHL (Groth) and not sure about the parents
+          </div>
+         </li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3 class="hotel">Hotel</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">Ovolo Woolloomooloo</div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/kfCXqwUkFe3C2nKi6" data-address="6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia">6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</a></div>
+        <div class="hotel-phone">+61 2 9331 9000</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cairns Content -->
+<div class="content" id="cairns">
+  <div class="tab-image">
+    <img src="cairnsimage.jpg" alt="Great Barrier Reef">
+    <div class="location-title">Cairns, Australia</div>
+  </div>
+  
+  <div class="itinerary">
+    <div class="day">
+      <h3>Monday, June 23</h3>
+      <ul class="activities">
+       <li class="flight"><span class="time">14:00</span> - <b>Shangri-La The Marina</b> check-in</li>         
+       <li class="meal"><span class="time">18:00</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Tuesday, June 24</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:30</span> - <a href="https://www.crocodileadventures.com/how-to-visit-us/transport-options">1/2 Day Tour (Harley's Crocs)</a>
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            Taxi takes about 20 min (w/out traffic) and we can return via the <a href="https://www.fantasea.com.au/timetable/">Sydney Harbour Hopper</a> ferry an <a href="Tickets/">TICKETS</a>
+          </div>
+        </li>  
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Wednesday, June 25</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:00</span> - <a href="https://www.greenislandcairns.com/">Green Island/Great Barrier Reef Day</a></li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Thursday, June 26</h3>
+      <ul class="activities">
+        <li class="meal"><span class="time">7:30</span> - <a href="https://www.oceanfreedom.com.au/?_gl=1%2Ahco0lz%2A_gcl_au%2ANzI3NDUxMTUyLjE3NDY0NDI4NDA">Great Barrier Reef trip</a> 
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+            6-hour catamaran trip including 2 snorkeling or glass bottom boat spots. Check in at the Ocean Free & Ocean Freedom desk inside the Reef Fleet Terminal in Marlin Marina Cairns from 7:15 AM. After checkin, board the boat from 7:30 AM at A Finger No 5 Marlin Marina for an 8 AM departure. Pay the AUD20 emc/port/administration fee per person at checkin. <a href="Tickets/">TICKETS</a> 
+          </div>
+         </li>
+
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Friday, June 27</h3>
+      <ul class="activities">
+        <li class="adventure"><span class="time">8:20</span> - <a href="https://maps.app.goo.gl/eSWWoBUJrNnDDoo3A?" data-address="Kuranda Scenic Railway">Kuranda</a> Tour
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+          <div class="details-content" style="display: none;">
+          <a href="https://www.downundertours.com/kuranda/">Down Under Tours</a> departs @ 8:40 from the Pacific Hotel Cairns - Bus Zone on Spence Street. Reminder to visit Kuranda Koala Gardens first to pick up vouchers for the Bird place and Butterflyworld.
+        </div>
+	</li>
+        <li class="meal"><span class="time">18:00</span> - Family Dinner</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3>Saturday, June 28</h3>
+      <ul class="activities">
+        <li class="flight"><span class="time">9:00?</span> - Dan, Beth, Neely, Skai, Gabe &amp; Lily go to airport</li>
+      </ul>
+    </div>
+    
+    <div class="day">
+      <h3 class="hotel">Hotel</h3>
+      <div class="hotel-details">
+        <div class="hotel-name">Shangri-La The Marina, Cairns</div>
+        <div class="hotel-address"><a href="https://maps.app.goo.gl/oAYyaphBPhWc7cYL9" data-address="Pier Point Road, Cairns Queensland 4870">Pier Point Road, Cairns Queensland 4870</a></div>
+        <div class="hotel-phone">+61 7 4052 7500</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>Adventure Funding:</strong> Bobe</p>
+  <p><strong>Travel Agent & UX:</strong> Lorie</p>
+  <p><strong>App & Games Developer:</strong> Brian</p>
+  
+  <hr class="footer-divider">
+  
+  <div class="footer-links">
+    <a href="https://briangroth.github.io/POI/" class="footer-link">
+      <i class="fas fa-gamepad"></i> Nearby Points of Interest
+    </a>
+    <a href="https://briangroth.github.io/4xBingo/" class="footer-link">
+      <i class="fas fa-gamepad"></i> Travel Photo Bingo
+    </a>
+    <a href="feedback.html" class="footer-link">
+      <i class="fas fa-comment"></i> Feedback?
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Tab switching logic
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const cityName = tab.dataset.city;
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      
+      // Save the active tab preference to localStorage
+      localStorage.setItem('activeTab', tab.dataset.tab);
+    });
+  });
+
+
+// Firgure out which tab to default to
+
+  function updateCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    if (!countdownElement) return;
+
+    const tripStart = new Date("2025-06-15T00:00:00");
+    const now = new Date();
+    
+    if (now >= tripStart) {
+        countdownElement.textContent = "Trip in progress!";
+        return;
+    }
+    
+    const diff = tripStart - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    countdownElement.textContent = `${days} days, ${hours} hours until the adventure begins!`;
+}
+
+
+  // Choose the correct default tab based on date or previous selection
+  // Replace the existing DOMContentLoaded event listener with this updated version:
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if there's a saved tab preference
+    const savedTab = localStorage.getItem('activeTab');
+    
+    // Get current date
+    const now = new Date();
+    let defaultTab = "auckland"; // default fallback
+
+    // Determine default tab based on trip dates
+    if (now >= new Date("2025-06-19T00:00:00")) {
+        defaultTab = "sydney";
+    }
+    if (now >= new Date("2025-06-23T00:00:00")) {
+        defaultTab = "cairns";
+    }
+
+    // Use saved preference if available, otherwise use date-based default
+    const tabToActivate = savedTab || defaultTab;
+    
+    // Get the tab element
+    const activeTab = document.querySelector(`.tab[data-tab="${tabToActivate}"]`);
+    
+    if (activeTab) {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to selected tab and content
+        activeTab.classList.add('active');
+        const content = document.getElementById(tabToActivate);
+        if (content) {
+            content.classList.add('active');
+        }
+    }
+    
+    // Update countdown every day
+    setInterval(updateCountdown, 86400000);
+    
+    // Update map links to use platform-specific URL schemes
+    updateMapLinks();
+});
+  
+// Function to update Google Maps links based on the user's platform using a data-address attribute
+function updateMapLinks() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const isAndroid = /android/i.test(userAgent);
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  // Select anchors with Google Maps URLs
+  const links = document.querySelectorAll('a[href*="maps.app.goo.gl"]');
+
+  links.forEach(link => {
+    // Retrieve the actual address from a custom data attribute
+    const address = link.dataset.address;
+    if (!address) {
+      // If no address is provided, do not modify the link
+      return;
+    }
+    if (isAndroid) {
+      // For Android, use the geo: scheme with the address query
+      link.href = "geo:0,0?q=" + encodeURIComponent(address);
+    } else if (isIOS) {
+      // For iOS, use the comgooglemaps:// scheme with the address query
+      link.href = "comgooglemaps://?q=" + encodeURIComponent(address);
+    }
+  });
+}
+
+
+  // Function to toggle the visibility of details content
+  function toggleDetails(button) {
+    const detailsContent = button.nextElementSibling;
+    if (detailsContent.style.display === "none") {
+      detailsContent.style.display = "block";
+      button.textContent = "▲"; // Change button text to indicate collapse
+    } else {
+      detailsContent.style.display = "none";
+      button.textContent = "▼"; // Change button text to indicate expand
+    }
+  }
+</script>
+</body>
+</html>
