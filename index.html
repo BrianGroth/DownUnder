@@ -118,10 +118,14 @@
   <img src="openingimage.jpg" alt="Sunrise over the Outback" class="opening-image" />
 
   <!-- Password prompt -->
+  <!-- 
   <p>Enter a password to start the adventure</p>
-  <input type="password" id="pwInput" placeholder="Password" />
-  <button id="submitBtn">Submit</button>
-  <div id="errorMsg" class="error">Incorrect password.</div>
+-->
+  <div style="padding: 0 1rem;">
+    <input type="password" id="pwInput" placeholder="Password" />
+    <button id="submitBtn">Submit</button>
+    <div id="errorMsg" class="error">Incorrect password.</div>
+  </div>
 
   <script>
     document.getElementById('submitBtn').addEventListener('click', () => {
