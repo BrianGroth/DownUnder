@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Protected Page</title>
+  <title>Down Under Adventure – Protected</title>
 
-  <!-- BEGIN copied from MainContent.html CSS -->
+  <!-- Site CSS copied from MainContent.html -->
   <style>
-    /* Font & base */
+    /* Base & layout */
     body {
       font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: #333333;
@@ -17,31 +17,34 @@
       padding: 0 1rem;
       background-color: #fafafa;
     }
+    a { color: #0a9396; text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-    /* Headings */
-    h1, h2, h3, h4 {
+    /* Masthead */
+    .masthead {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .masthead h1 {
+      font-size: 3rem;
       color: #005f73;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      line-height: 1.2;
+      margin: 0;
+      line-height: 1.1;
     }
-    h1 {
-      font-size: 2.25rem;
-    }
-    h2 {
-      font-size: 1.75rem;
-    }
-    h3 {
+    .masthead p {
       font-size: 1.25rem;
+      color: #0a9396;
+      margin-top: 0.5rem;
     }
 
-    /* Links */
-    a {
-      color: #0a9396;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
+    /* Opening image */
+    .opening-image {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     /* Form */
@@ -63,22 +66,30 @@
     #submitBtn:hover {
       background-color: #ee9b00;
     }
-
     .error {
       color: #bb3e03;
       margin-top: 1rem;
       font-weight: bold;
+      display: none;
     }
   </style>
-  <!-- END copied CSS -->
-
 </head>
 <body>
-  <h1>Enter Password</h1>
 
+  <!-- Masthead copied from MainContent.html -->
+  <header class="masthead">
+    <h1>Down Under Adventure</h1>
+    <p>Exploring the wilds of Australia</p>
+  </header>
+
+  <!-- Opening image -->
+  <img src="openingimage.jpg" alt="Sunrise over the Outback" class="opening-image" />
+
+  <!-- Password prompt -->
+  <h2>Enter Password</h2>
   <input type="password" id="pwInput" placeholder="Password" />
   <button id="submitBtn">Submit</button>
-  <div id="errorMsg" class="error" style="display: none;">Incorrect password.</div>
+  <div id="errorMsg" class="error">Incorrect password.</div>
 
   <script>
     document.getElementById('submitBtn').addEventListener('click', () => {
@@ -96,8 +107,9 @@
           }
         })
         .catch(err => {
-          document.getElementById('errorMsg').textContent = 'Error loading password data.';
-          document.getElementById('errorMsg').style.display = 'block';
+          const errDiv = document.getElementById('errorMsg');
+          errDiv.textContent = 'Error loading password data.';
+          errDiv.style.display = 'block';
           console.error(err);
         });
     });
