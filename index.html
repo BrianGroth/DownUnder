@@ -128,31 +128,31 @@
   </div>
 
   <script>
-    document.getElementById('submitBtn').addEventListener('click', () => {
+    async function checkPassword() {
       const pw = document.getElementById('pwInput').value;
-      fetch('passwords.json')
-        .then(res => {
-          if (!res.ok) throw new Error('Could not load password file');
-          return res.json();
-        })
-        .then(data => {
-          if (pw === data.password) {
-            window.location.href = 'MainContent.html';
-          } else {
-            document.getElementById('errorMsg').style.display = 'block';
-          }
-        })
-        .catch(err => {
-          const errDiv = document.getElementById('errorMsg');
-          errDiv.textContent = 'Error loading password data.';
-          errDiv.style.display = 'block';
-          console.error(err);
-        });
-    });
-
+      try {
+        // <-- add cache: 'no-store' here
+        const res = await fetch('passwords.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load password file');
+        const data = await res.json();
+  
+        if (pw === data.password) {
+          window.location.href = 'MainContent.html';
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+        }
+      } catch (err) {
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.textContent = 'Error loading password data.';
+        errDiv.style.display = 'block';
+        console.error(err);
+      }
+    }
+  
+    document.getElementById('submitBtn').addEventListener('click', checkPassword);
     document.getElementById('pwInput').addEventListener('keypress', e => {
-      if (e.key === 'Enter') document.getElementById('submitBtn').click();
+      if (e.key === 'Enter') checkPassword();
     });
   </script>
-</body>
+  </body>
 </html>
