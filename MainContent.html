@@ -345,11 +345,21 @@
     <div class="day">
       <h3>Sunday, June 15</h3>
       <ul class="activities">
-        <li class="adventure"><span class="time">Arrivals!</span> - (B&L arrive after 12:00)</li>
-        <li class="hotel"><span class="time">15:00</span> - <b>Intercontinental</b> check-in</li>
+        <li class="adventure"><span class="time">Arrivals!</span> - B&L arrive after 12:00</li>
+        <li class="hotel"><span class="time">15:00</span> - <b>Intercontinental</b> check-in       
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;"> 
+          <a href="https://maps.app.goo.gl/S7GRASE7yRUtjE3E7" data-address="1 Queen Street, Auckland NZ 1010">1 Queen Street, Auckland</a>
+          +64 0 9304 0040<br>
+          Pay at property, requested early arrival  &  rooms to be together/near each other.<br><br>          
+          43771354 - King Suite w/view (Mom & Dad)<br>
+          67471246 - Doubles (Beth & Lily)<br>
+          21824362 - King (Dan & Neely)<br>
+          67471246 - Doubles (Skai & Gabe)<br>
+          25251080 - King (Lorie & Brian)
+       </li>
       </ul>
-    </div>
-    
+    </div> 
     <div class="day">
       <h3>Monday, June 16</h3>
       <ul class="activities">
@@ -365,8 +375,18 @@
         <li class="adventure"><span class="time">12:00</span> - Arrive <a href="https://www.waitomo.com/glowworms-and-caves/waitomo-glowworm-caves">Waitomo</a> (drive 2.5 hrs)
         <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
         <div class="details-content" style="display: none;">           
-          Tour the Waitomo Glowworm Caves (1 hour) and lunch @ <a href="https://www.thegeneralstorewaitomo.co.nz/">12 Tables</a> (45 min)<br>
-        <li class="hotel"><span class="time">16:00</span> - Arrive <b>Pullman Rotorua</b> (drive 2 hrs)</li>
+          Tour the Waitomo Glowworm Caves (1 hour) and lunch @ <a href="https://www.thegeneralstorewaitomo.co.nz/">12 Tables</a> (45 min)<br></li>
+        <li class="hotel"><span class="time">16:00</span> - <b>Pullman Rotorua</b> check-in (drive 2 hrs)
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;"> 
+          <a href="https://maps.app.goo.gl/NqQnqt4VpAaynmsV8" data-address="1135 Arawa St., 3010 Rotorua, New Zealand">1135 Arawa Street, Rotorua</a> +64 7343 9750<br>
+          Held on Dad's credit card for post-6:00pm arrival, can check in on Lorie's app<br><br>          
+          NQVSJQZK - King Suite w/view (Mom & Dad)<br>
+          NQVSJQBP - Doubles (Beth & Lily)<br>
+          NQVSJQBP  - Doubles (Dan & Neely)<br>
+          NQVSJQBP  - Doubles (Skai & Gabe)<br>
+          NQVSJQHM - King (Lorie & Brian)
+       </li>
         <li class="adventure"><span class="time">18:00</span> - Dinner @ <a href="https://www.mitai.co.nz/mitai-maori-cultural-experience-nz/">Maori Experience</a>
         <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
         <div class="details-content" style="display: none;">           
@@ -392,7 +412,17 @@
           Lunch & stretch before our <b>14:10 tour</b> (golf cart requested if available), depart @ 16:45<br>
         </div>
        </li>
-        <li class="hotel"><span class="time">19:30</span> - Arrive <b>Pullman Airport</b> (drive 2 hrs)</li>
+        <li class="hotel"><span class="time">19:30</span> - <b>Pullman Airport</b> check-in (drive 2 hrs)
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;"> 
+         <a href="https://maps.app.goo.gl/LoJiZEXFGjawtMtH7" data-address="Auckland International Airport, 37 Tom Pearce Drive">37 Tom Pearce Drive</a> +64 9 2567901<br>
+          Held on Dad's credit card, can check in on Lorie's app<br><br>          
+          NQVSJSLL - King Suite w/view (Mom & Dad)<br>
+          NQVSJRSV - Doubles (Beth & Lily)<br>
+          NQVSJRSV - King (Dan & Neely)<br>
+          NQVSJRSV - Doubles (Skai & Gabe)<br>
+          NQVSJSLL - Doubles (Lorie & Brian)
+       </li>
     </ul>
     </div>
 
@@ -408,26 +438,6 @@
          </li>
       </ul>
     </div>
-
-    <div class="day">
-      <h3 class="hotel">Hotels</h3>
-      <div class="hotel-details">
-        <div class="hotel-name">InterContinental Auckland</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/S7GRASE7yRUtjE3E7" data-address="1 Queen Street, Auckland NZ 1010">1 Queen Street, Auckland</a></div>
-        <div class="hotel-phone">+64 0 9304 0040</div>
-      </div>
-      <div class="hotel-details">
-        <div class="hotel-name">Pullman Rotorua</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/NqQnqt4VpAaynmsV8" data-address="1135 Arawa St., 3010 Rotorua, New Zealand">1135 Arawa Street, Rotorua</a></div>
-        <div class="hotel-phone">+64 7343 9750</div>
-      </div>
-      
-      <div class="hotel-details">
-        <div class="hotel-name">Pullman Auckland Airport</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/LoJiZEXFGjawtMtH7" data-address="Auckland International Airport, 37 Tom Pearce Drive">37 Tom Pearce Drive</a></div>
-        <div class="hotel-phone">+64 9 2567901</div>
-      </div>
-    </div>      
   </div>
 </div>
 
@@ -442,14 +452,24 @@
    <div class="day">
       <h3>Thursday, June 19</h3>
       <ul class="activities">
-        <li class="flight"><span class="time">15:00</span> - <b>Ovooloo Wooloomooloo</b> check-in</li>        
+        <li class="flight"><span class="time">15:00</span> - <b>Ovooloo Wooloomooloo</b> check-in
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;"> 
+         <a href="https://maps.app.goo.gl/kfCXqwUkFe3C2nKi6" data-address="6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia">6 Cowper Wharf Roadway, Woolloomooloo</a> +61 2 9331 9000<br>
+          Pre-paid w/cancelation option. Has self-service laundry!<br><br>          
+          443654518 - Deluxeroo Cityvoo (Mom & Dad)<br>
+          443654510 - Deluxerooo (Beth & Lily)<br>
+          443654527 - Superoo (Dan & Neely)<br>
+          443654255 - Deluxerooo (Skai & Gabe)<br>
+          443654238 - Deluxeroo Loft (Lorie & Brian)
+       </li>
+       
         <li class="meal">
           <span class="time">18:00</span> - Dinner @ <a href="https://ottoristorante.com.au/sydney/">OTTO Ristorante</a> 
           <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
           <div class="details-content" style="display: none;">
             w/ Chris & Candy <a href="https://maps.app.goo.gl/HeoExCu6vKDD247u8" data-address="Area 8, 6 Cowper Wharf Road, Wooloomooloo">
-            Area 8, 6 Cowper Wharf Road, Woolloomooloo
-            </a>
+            Area 8, 6 Cowper Wharf Road, Woolloomooloo</a>
           </div>
         </li>
       </ul>
@@ -513,15 +533,6 @@
          </li>
       </ul>
     </div>
-    
-    <div class="day">
-      <h3 class="hotel">Hotel</h3>
-      <div class="hotel-details">
-        <div class="hotel-name">Ovolo Woolloomooloo</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/kfCXqwUkFe3C2nKi6" data-address="6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia">6 Cowper Wharf Roadway, Woolloomooloo NSW 2011, Australia</a></div>
-        <div class="hotel-phone">+61 2 9331 9000</div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -536,10 +547,18 @@
     <div class="day">
       <h3>Monday, June 23</h3>
       <ul class="activities">
-       <li class="flight"><span class="time">14:00</span> - <b>Shangri-La The Marina</b> check-in</li>         
+       <li class="flight"><span class="time">14:00</span> - <b>Shangri-La The Marina</b> check-in
+        <button class="details-toggle" onclick="toggleDetails(this)">▼</button>
+        <div class="details-content" style="display: none;"> 
+        <a href="https://maps.app.goo.gl/oAYyaphBPhWc7cYL9" data-address="Pier Point Road, Cairns Queensland 4870">Pier Point Road, Cairns</a>+61 7 4052 7500<br>
+          Pay at property, requested non-smoking & Dan's rooms be together/near<br><br>          
+          12098528118 - King w/view (Mom & Dad)<br>
+          12098297882 - Doubles w/sea view (Beth & Lily)<br>
+          12098216445 - King (Dan & Neely)<br>
+          12098341642 - Doubles (Skai & Gabe)<br>
+          12098724062 - King (Lorie & Brian)     
       </ul>
     </div>
-    
     <div class="day">
       <h3>Tuesday, June 24</h3>
       <ul class="activities">
@@ -590,17 +609,8 @@
     <div class="day">
       <h3>Saturday, June 28</h3>
       <ul class="activities">
-        <li class="flight"><span class="time">9:00?</span> - Dan, Beth, Neely, Skai, Gabe &amp; Lily go to airport</li>
+        <li class="flight"><span class="time">8:30</span> - Taxi to Cairns Airport</li>
       </ul>
-    </div>
-    
-    <div class="day">
-      <h3 class="hotel">Hotel</h3>
-      <div class="hotel-details">
-        <div class="hotel-name">Shangri-La The Marina, Cairns</div>
-        <div class="hotel-address"><a href="https://maps.app.goo.gl/oAYyaphBPhWc7cYL9" data-address="Pier Point Road, Cairns Queensland 4870">Pier Point Road, Cairns Queensland 4870</a></div>
-        <div class="hotel-phone">+61 7 4052 7500</div>
-      </div>
     </div>
   </div>
 </div>
@@ -617,11 +627,13 @@
     <a href="https://briangroth.github.io/POI/" class="footer-link">
       <i class="fas fa-gamepad"></i> Nearby Points of Interest
     </a>
+<!--
     <a href="https://briangroth.github.io/4xBingo/" class="footer-link">
       <i class="fas fa-gamepad"></i> Travel Photo Bingo
     </a>
+-->
     <a href="feedback.html" class="footer-link">
-      <i class="fas fa-comment"></i> Feedback?
+      <i class="fas fa-comment"></i> Got Feedback?
     </a>
   </div>
 </footer>
