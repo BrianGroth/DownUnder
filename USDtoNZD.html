@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>USD to NZD Exchange Rate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .rate {
+      font-size: 2em;
+      margin-top: 20px;
+      color: #2a9d8f;
+    }
+  </style>
+</head>
+<body>
+  <h1>USD to NZD Exchange Rate</h1>
+  <div class="rate" id="exchangeRate">Loading...</div>
+
+  <script>
+    fetch('https://api.exchangerate.host/latest?base=USD&symbols=NZD')
+      .then(response => response.json())
+      .then(data => {
+        const rate = data.rates.NZD;
+        document.getElementById('exchangeRate').innerText = `1 USD = ${rate.toFixed(4)} NZD`;
+      })
+      .catch(error => {
+        document.getElementById('exchangeRate').innerText = 'Error fetching rate.';
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>
