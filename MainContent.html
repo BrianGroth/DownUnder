@@ -620,6 +620,11 @@
 </div>
 
 <footer>
+  <div class="rate" id="rateNZD">Loading NZD to USD...</div>
+  <div class="rate" id="rateAUD">Loading AUD to USD...</div>
+</footer>
+
+<footer>
   <p><strong>Adventure Host:</strong> Bobe</p>
   <p><strong>Travel Agent & UX:</strong> Lorie</p>
   <p><strong>App Developer:</strong> Brian</p>
@@ -765,6 +770,29 @@ function updateMapLinks() {
       button.textContent = "▼"; // Change button text to indicate expand
     }
   }
-</script>
+    // Fetch NZD to USD rate
+    fetch('https://open.er-api.com/v6/latest/NZD')
+      .then(response => response.json())
+      .then(data => {
+        const rateNZD = data.rates.USD;
+        document.getElementById('rateNZD').innerText = `1 NZD = ${rateNZD.toFixed(4)} USD`;
+      })
+      .catch(error => {
+        document.getElementById('rateNZD').innerText = 'Error fetching NZD rate.';
+        console.error('Error:', error);
+      });
+
+    // Fetch AUD to USD rate
+    fetch('https://open.er-api.com/v6/latest/AUD')
+      .then(response => response.json())
+      .then(data => {
+        const rateAUD = data.rates.USD;
+        document.getElementById('rateAUD').innerText = `1 AUD = ${rateAUD.toFixed(4)} USD`;
+      })
+      .catch(error => {
+        document.getElementById('rateAUD').innerText = 'Error fetching AUD rate.';
+        console.error('Error:', error);
+      });
+  </script>
 </body>
 </html>

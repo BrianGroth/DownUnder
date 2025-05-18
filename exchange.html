@@ -3,81 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Exchange Rates Ticker</title>
+  <title>Exchange Rates: NZD & AUD to USD</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+      text-align: center;
+      margin-top: 50px;
     }
-
-    .ticker-container {
-      width: 100%;
-      overflow: hidden;
-      background-color: #f0f0f0;
-      border-top: 2px solid #ccc;
-      border-bottom: 2px solid #ccc;
-    }
-
-    .ticker {
-      display: inline-block;
-      white-space: nowrap;
-      padding-left: 100%;
-      animation: scroll-left 20s linear infinite;
-    }
-
-    .ticker span {
-      display: inline-block;
-      padding: 0 2rem;
+    .rate {
       font-size: 1.5em;
+      margin: 20px 0;
       color: #2a9d8f;
     }
-
-    @keyframes scroll-left {
-      0% {
-        transform: translateX(0%);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
+    .attribution {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
+  <div class="rate" id="rateNZD">Loading NZD to USD...</div>
+  <div class="rate" id="rateAUD">Loading AUD to USD...</div>
 
-  <div class="ticker-container">
-    <div class="ticker" id="exchangeTicker">
-      <span>Loading exchange rates...</span>
-    </div>
+  <div class="attribution">
+    Data provided by <a href="https://www.exchangerate-api.com/docs/free" target="_blank">ExchangeRate-API</a>
   </div>
 
   <script>
     // Fetch NZD to USD rate
     fetch('https://open.er-api.com/v6/latest/NZD')
       .then(response => response.json())
-      .then(dataNZD => {
-        const rateNZD = dataNZD.rates.USD;
-        // Fetch AUD to USD rate
-        fetch('https://open.er-api.com/v6/latest/AUD')
-          .then(response => response.json())
-          .then(dataAUD => {
-            const rateAUD = dataAUD.rates.USD;
-            const ticker = document.getElementById('exchangeTicker');
-            ticker.innerHTML = `
-              <span>1 NZD = ${rateNZD.toFixed(4)} USD</span>
-              <span>1 AUD = ${rateAUD.toFixed(4)} USD</span>
-            `;
-          })
-          .catch(error => {
-            document.getElementById('exchangeTicker').innerHTML = '<span>Error fetching AUD rate.</span>';
-            console.error('Error fetching AUD rate:', error);
-          });
+      .then(data => {
+        const rateNZD = data.rates.USD;
+        document.getElementById('rateNZD').innerText = `1 NZD = ${rateNZD.toFixed(4)} USD`;
       })
       .catch(error => {
-        document.getElementById('exchangeTicker').innerHTML = '<span>Error fetching NZD rate.</span>';
-        console.error('Error fetching NZD rate:', error);
+        document.getElementById('rateNZD').innerText = 'Error fetching NZD rate.';
+        console.error('Error:', error);
+      });
+
+    // Fetch AUD to USD rate
+    fetch('https://open.er-api.com/v6/latest/AUD')
+      .then(response => response.json())
+      .then(data => {
+        const rateAUD = data.rates.USD;
+        document.getElementById('rateAUD').innerText = `1 AUD = ${rateAUD.toFixed(4)} USD`;
+      })
+      .catch(error => {
+        document.getElementById('rateAUD').innerText = 'Error fetching AUD rate.';
+        console.error('Error:', error);
       });
   </script>
-
 </body>
 </html>
