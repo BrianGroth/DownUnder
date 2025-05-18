@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,11 +299,9 @@
     /* Responsive design */
     @media (max-width: 600px) {
       .tab span {
-        font-size: 0.9em;
       }
       
       .location-title {
-      font-size: 0.9em;
       }
     }
 
@@ -326,7 +323,6 @@
     .ticker span {
       display: inline-block;
       padding: 0 2rem;
-      font-size: 0.9em;
     }
 
     @keyframes scroll-left {
@@ -648,8 +644,8 @@
 
 <footer>
     <div class="ticker-container">
-    <div class="ticker" id="exchangeTicker">
-      <span>Loading rates & weather…</span>
+    <div class="ticker" id="exchangeTicker" style="animation: none; white-space: normal;">
+      <span>Loading rates…</span>
     </div>
   </div>
 </footer>
@@ -804,36 +800,35 @@ function updateMapLinks() {
     const ticker = document.getElementById('exchangeTicker');
 
     // Human-readable map of Open-Meteo weather codes
-// Human-readable map of Open-Meteo weather codes
-const weatherCodes = {
-  0:  'Clear sky',
-  1:  'Mainly clear',
-  2:  'Partly cloudy',
-  3:  'Overcast',
-  45: 'Fog',
-  48: 'Rime fog',
-  51: 'Light drizzle',
-  53: 'Moderate drizzle',
-  55: 'Heavy drizzle',
-  61: 'Light rain',
-  63: 'Moderate rain',
-  65: 'Heavy rain',
-  66: 'Freezing rain',
-  67: 'Heavy freezing rain',
-  71: 'Light snow',
-  73: 'Moderate snow',
-  75: 'Heavy snow',
-  77: 'Snow grains',
-  80: 'Light rain showers',      // ← added
-  81: 'Moderate rain showers',   // ← added
-  82: 'Violent rain showers',    // ← added
-  85: 'Slight snow showers',     // ← optional
-  86: 'Heavy snow showers',      // ← optional
-  95: 'Thunderstorm',
-  96: 'Thunderstorm + slight hail',
-  99: 'Thunderstorm + heavy hail'
-};
-
+    /*
+    const weatherCodes = {
+      0:  'Clear sky',
+      1:  'Mainly clear',
+      2:  'Partly cloudy',
+      3:  'Overcast',
+      45: 'Fog',
+      48: 'Rime fog',
+      51: 'Light drizzle',
+      53: 'Moderate drizzle',
+      55: 'Heavy drizzle',
+      61: 'Light rain',
+      63: 'Moderate rain',
+      65: 'Heavy rain',
+      66: 'Freezing rain',
+      67: 'Heavy freezing rain',
+      71: 'Light snow',
+      73: 'Moderate snow',
+      75: 'Heavy snow',
+      77: 'Snow grains',
+      80: 'Light rain showers',
+      81: 'Moderate rain showers',
+      82: 'Violent rain showers',
+      85: 'Slight snow showers',
+      86: 'Heavy snow showers',
+      95: 'Thunderstorm',
+      96: 'Thunderstorm + slight hail',
+      99: 'Thunderstorm + heavy hail'
+    };
 
     // Hard-coded coords for each city
     const locations = [
@@ -858,6 +853,7 @@ const weatherCodes = {
           return `${loc.name}: ${cw.temperature.toFixed(1)}°C, ${desc}`;
         });
     }
+    */
 
     // Fetch exchange rate from base → USD
     function fetchRate(base) {
@@ -869,18 +865,14 @@ const weatherCodes = {
         .then(data => data.rates.USD);
     }
 
-    // Kick off all fetches in parallel
+    // Only fetch and display exchange rates (no weather)
     const rateNZD = fetchRate('NZD');
     const rateAUD = fetchRate('AUD');
-    const weatherPromises = locations.map(fetchWeather);
 
-    Promise.all([rateNZD, rateAUD, ...weatherPromises])
+    Promise.all([rateNZD, rateAUD])
       .then(results => {
-        const [nzd, aud, ...weathers] = results;
+        const [nzd, aud] = results;
         const spans = [
-          // weather spans first
-          ...weathers.map(txt => `<span>${txt}</span>`),
-          // then exchange rates
           `<span>1 NZD = ${nzd.toFixed(4)} USD</span>`,
           `<span>1 AUD = ${aud.toFixed(4)} USD</span>`
         ];
