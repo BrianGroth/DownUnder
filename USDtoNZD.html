@@ -22,7 +22,7 @@
   <div class="rate" id="exchangeRate">Loading...</div>
 
   <script>
-    fetch('https://api.exchangerate.host/latest?base=USD&symbols=NZD')
+    fetch('https://api.frankfurter.dev/latest?from=USD&to=NZD')
       .then(response => response.json())
       .then(data => {
         const rate = data.rates.NZD;
