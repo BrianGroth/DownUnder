@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Feedback - DownUnder Travel</title>
+  <style>
+    /* Global Styles */
+    :root {
+      --primary: #ff6b35;
+      --secondary: #2ec4b6;
+      --accent: #ff9e1b;
+      --dark: #1a535c;
+      --light: #f7fff7;
+    }
+    
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+      color: var(--dark);
+      min-height: 100vh;
+      background-image: linear-gradient(to bottom, #f7fff7, #e0fff0);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header Styles */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary);
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      display: inline-block;
+    }
+    
+    h1::after {
+      content: "🦘";
+      position: absolute;
+      right: -40px;
+      top: 0;
+    }
+    
+    .subtitle {
+      font-size: 1.2em;
+      color: var(--dark);
+      font-style: italic;
+    }
+    
+    /* Form Styles */
+    .feedback-form {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .feedback-form:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+    
+    /* Checkbox Styles */
+    .checkbox-group {
+      margin-bottom: 25px;
+    }
+    
+    .checkbox-container {
+      display: block;
+      position: relative;
+      padding-left: 45px;
+      margin-bottom: 18px;
+      cursor: pointer;
+      font-size: 1.1em;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+    
+    .checkbox-container:hover {
+      transform: translateX(5px);
+      color: var(--primary);
+    }
+    
+    .checkbox-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 28px;
+      width: 28px;
+      background-color: #eee;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .checkbox-container:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark {
+      background-color: var(--secondary);
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .checkbox-container input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .checkbox-container .checkmark:after {
+      left: 10px;
+      top: 5px;
+      width: 8px;
+      height: 14px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+    }
+    
+    /* Button Styles */
+    .btn-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .submit-btn {
+      padding: 12px 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(255, 107, 53, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .submit-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.7s ease;
+    }
+    
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+    
+    /* Footer Styles */
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 20px 0;
+      color: var(--dark);
+      font-size: 0.9em;
+      position: relative;
+    }
+    
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    
+    .footer a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    
+    /* Decorative Elements */
+    .decoration {
+      position: absolute;
+      opacity: 0.1;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .circle-1 {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      top: -100px;
+      left: -100px;
+    }
+    
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      bottom: -50px;
+      right: -50px;
+    }
+    
+    /* Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    /* Shake animation for the form */
+    .shake {
+      animation: shake 0.5s;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Confetti Animation */
+    .confetti-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 99;
+      display: none;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #ff6b35;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="decoration circle-1"></div>
+  <div class="decoration circle-2"></div>
+  
+  <div class="container">
+    <div class="header">
+      <h1 class="floating">DownUnder Travel Feedback</h1>
+      <p class="subtitle">G'day mate! Tell us what you think!</p>
+    </div>
+    
+    <div class="feedback-form">
+      <div class="checkbox-group">
+        <label class="checkbox-container">
+          This is the best travel app ever! 🌍
+          <input type="checkbox" id="bestTravelApp" name="bestTravelApp">
+          <span class="checkmark"></span>
+        </label>
+        
+        <label class="checkbox-container">
+          Traveling with the family is the best 👨‍👩‍👧‍👦
+          <input type="checkbox" id="familyTravel" name="familyTravel">
+          <span class="checkmark"></span>
+        </label>
+        
+        <label class="checkbox-container">
+          Brian is an amazing app developer 💻
+          <input type="checkbox" id="amazingDeveloper" name="amazingDeveloper">
+          <span class="checkmark"></span>
+        </label>
+        
+        <label class="checkbox-container">
+          Lorie is an amazing travel agent 🌟
+          <input type="checkbox" id="amazingAgent" name="amazingAgent">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      
+      <div class="btn-container">
+        <button type="button" class="submit-btn" id="submitBtn">Crikey, that's right!</button>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>Brian's Down Under Travel &copy; 2025</p>
+      <p>What info does your browser share about you? <a href="userinfo.html">Find out, mate!</a></p>
+    </div>
+  </div>
+  
+  <div class="confetti-container" id="confettiContainer"></div>
+  
+  <script>
+    // Make checkbox labels more fun with random reactions
+    const reactions = [
+      "Bonzer choice!", 
+      "You beauty!", 
+      "Strewth, good on ya!", 
+      "Too right!", 
+      "Ace!",
+      "Fair dinkum!"
+    ];
+    
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(box => {
+      box.addEventListener('change', function() {
+        if (this.checked) {
+          const reaction = document.createElement('span');
+          reaction.textContent = " " + reactions[Math.floor(Math.random() * reactions.length)];
+          reaction.style.color = '#ff6b35';
+          reaction.style.fontWeight = 'bold';
+          reaction.style.marginLeft = '5px';
+          reaction.style.opacity = '0';
+          reaction.style.transition = 'opacity 0.3s ease';
+          
+          this.parentNode.appendChild(reaction);
+          
+          setTimeout(() => {
+            reaction.style.opacity = '1';
+          }, 50);
+          
+          setTimeout(() => {
+            reaction.style.opacity = '0';
+            setTimeout(() => {
+              reaction.remove();
+            }, 300);
+          }, 2000);
+        }
+      });
+    });
+    
+    // Confetti animation when submitting
+    function createConfetti() {
+      const confettiContainer = document.getElementById('confettiContainer');
+      confettiContainer.style.display = 'block';
+      confettiContainer.innerHTML = '';
+      
+      const colors = ['#ff6b35', '#2ec4b6', '#ff9e1b', '#1a535c', '#f7fff7'];
+      const confettiCount = 150;
+      
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Random style
+        const size = Math.random() * 10 + 5;
+        const shape = Math.random() > 0.5 ? '50%' : '0';
+        const left = Math.random() * 100;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        confetti.style.left = `${left}vw`;
+        confetti.style.top = '-20px';
+        confetti.style.borderRadius = shape;
+        confetti.style.backgroundColor = color;
+        confetti.style.opacity = '0';
+        
+        confettiContainer.appendChild(confetti);
+        
+        // Random animation
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 2;
+        
+        confetti.animate([
+          { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+          { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+          duration: duration * 1000,
+          delay: delay * 1000,
+          fill: 'forwards',
+          easing: 'cubic-bezier(0.21, 0.98, 0.6, 0.99)'
+        });
+      }
+      
+      setTimeout(() => {
+        confettiContainer.style.display = 'none';
+      }, 5000);
+    }
+    
+    // Submit button event
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      const form = document.querySelector('.feedback-form');
+      // Check if at least one box is checked
+      const anyChecked = Array.from(checkboxes).some(box => box.checked);
+      
+      if (anyChecked) {
+        createConfetti();
+        
+        // Show thank you message
+        const originalContent = form.innerHTML;
+        form.innerHTML = `
+          <div style="text-align: center; padding: 20px;">
+            <h2 style="color: var(--primary);">Thanks a million, mate!</h2>
+            <p style="font-size: 1.2em; margin: 20px 0;">Your feedback has been... well, it's just made us happy!</p>
+            <div class="btn-container" style="margin-top: 30px;">
+              <button type="button" class="submit-btn" id="backBtn">Back to exploring!</button>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('backBtn').addEventListener('click', function() {
+          window.location.href = 'index.html';
+        });
+      } else {
+        // Wiggle the form if no checkboxes are selected
+        form.classList.add('shake');
+        setTimeout(() => {
+          form.classList.remove('shake');
+        }, 500);
+        
+        alert("G'day! Mind ticking at least one box before you go?");
+      }
+    });
+    
+    // Add some subtle animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Subtle background movement on mouse move
+      document.addEventListener('mousemove', function(e) {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        // Apply a subtle parallax effect to the decorative circles
+        document.querySelector('.circle-1').style.transform = 'translate(' + (mouseX * 50) + 'px, ' + (mouseY * 50) + 'px)';
+        document.querySelector('.circle-2').style.transform = 'translate(' + (mouseX * -30) + 'px, ' + (mouseY * -30) + 'px)';
+      });
+    });
+  </script>
+</body>
+</html>

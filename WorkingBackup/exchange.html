@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exchange Rates: NZD & AUD to USD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .rate {
+      font-size: 1.5em;
+      margin: 20px 0;
+      color: #2a9d8f;
+    }
+    .attribution {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="rate" id="rateNZD">Loading NZD to USD...</div>
+  <div class="rate" id="rateAUD">Loading AUD to USD...</div>
+
+  <div class="attribution">
+    Data provided by <a href="https://www.exchangerate-api.com/docs/free" target="_blank">ExchangeRate-API</a>
+  </div>
+
+  <script>
+    // Fetch NZD to USD rate
+    fetch('https://open.er-api.com/v6/latest/NZD')
+      .then(response => response.json())
+      .then(data => {
+        const rateNZD = data.rates.USD;
+        document.getElementById('rateNZD').innerText = `1 NZD = ${rateNZD.toFixed(4)} USD`;
+      })
+      .catch(error => {
+        document.getElementById('rateNZD').innerText = 'Error fetching NZD rate.';
+        console.error('Error:', error);
+      });
+
+    // Fetch AUD to USD rate
+    fetch('https://open.er-api.com/v6/latest/AUD')
+      .then(response => response.json())
+      .then(data => {
+        const rateAUD = data.rates.USD;
+        document.getElementById('rateAUD').innerText = `1 AUD = ${rateAUD.toFixed(4)} USD`;
+      })
+      .catch(error => {
+        document.getElementById('rateAUD').innerText = 'Error fetching AUD rate.';
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>

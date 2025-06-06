@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Down Under Adventure – Protected</title>
+
+  <!-- Site CSS copied from MainContent.html -->
+  <style>
+    :root {
+      --primary-color: #0077cc;
+      --secondary-color: #00a896;
+      --accent-color: #f4a261;
+      --light-bg: #f8f9fa;
+      --dark-text: #333;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-text);
+      background-color: var(--light-bg);
+      font-size: 16px;
+      padding-bottom: 60px; /* Space for footer */
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--white);
+      padding: 5px;
+      text-align: center;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-bottom: 5px;
+      box-shadow: var(--shadow);
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+    
+    /* Masthead */
+    .masthead {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .masthead h1 {
+      font-size: 3rem;
+      color: #005f73;
+      margin: 0;
+      line-height: 1.1;
+    }
+    .masthead p {
+      font-size: 1.25rem;
+      color: #0a9396;
+      margin-top: 0.5rem;
+    }
+
+    /* Opening image */
+    .opening-image {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Form */
+    #pwInput, #submitBtn {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #submitBtn {
+      background-color: #94d2bd;
+      border: none;
+      cursor: pointer;
+    }
+    #submitBtn:hover {
+      background-color: #ee9b00;
+    }
+    .error {
+      color: #bb3e03;
+      margin-top: 1rem;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Masthead copied from MainContent.html -->
+  <header>
+    <h1>Down Under Adventure</h1>
+  </header>
+
+  <!-- Opening image -->
+  <img src="openingimage.jpg" alt="Sunrise over the Outback" class="opening-image" />
+
+  <!-- Password prompt -->
+  <!-- 
+  <p>Enter a password to start the adventure</p>
+-->
+  <div style="padding: 0 1rem;">
+    <input type="password" id="pwInput" placeholder="Password" />
+    <button id="submitBtn">Submit</button>
+    <div id="errorMsg" class="error">Incorrect password.</div>
+  </div>
+
+  <script>
+    async function checkPassword() {
+      const pw = document.getElementById('pwInput').value;
+      try {
+        // <-- add cache: 'no-store' here
+        const res = await fetch('passwords.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load password file');
+        const data = await res.json();
+  
+        if (pw === data.password) {
+          window.location.href = 'MainContent.html';
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+        }
+      } catch (err) {
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.textContent = 'Error loading password data.';
+        errDiv.style.display = 'block';
+        console.error(err);
+      }
+    }
+  
+    document.getElementById('submitBtn').addEventListener('click', checkPassword);
+    document.getElementById('pwInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+  </body>
+</html>

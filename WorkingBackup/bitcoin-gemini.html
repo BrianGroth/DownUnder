@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top 10 Bitcoin Transactions & Price Impact</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .loading {
+      font-size: 1.2em;
+      color: #555;
+    }
+    .price-increase {
+      color: green;
+    }
+    .price-decrease {
+      color: red;
+    }
+    .impact-significant { background-color: #ffe0b2; } /* Light Orange */
+    .impact-moderate { background-color: #fff3e0; } /* Light Yellow */
+  </style>
+</head>
+<body>
+  <h2>Top 10 Bitcoin Transactions & Potential Price Impact</h2>
+  <div id="btcPrice">Loading price...</div>
+  <div id="loading" class="loading">Loading transactions...</div>
+
+  <table id="transactionsTable" style="display: none;">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>BTC Amount</th>
+        <th>Timestamp</th>
+        <th>Transaction Location</th>
+        <th>Potential Impact</th>
+        <th>Transaction Link</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const knownExchangeAddresses = [
+      "3FkenCiXpSLqD8L79intRNXUgjRoH9sjXa",
+      "1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s",
+      "bc1qgd82lly7g36stxeqg05kvrfypnkgxhhgyy84yl"
+    ];
+
+    async function fetchBitcoinPrice() {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+      const data = await res.json();
+      return data.bitcoin;
+    }
+
+    async function fetchTransactions() {
+      const res = await fetch('https://blockchain.info/unconfirmed-transactions?format=json&cors=true');
+      const data = await res.json();
+      return data.txs;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const priceEl = document.getElementById('btcPrice');
+      const loadingEl = document.getElementById('loading');
+      const tableEl = document.getElementById('transactionsTable');
+      const tbodyEl = tableEl.querySelector('tbody');
+
+      try {
+        const btcPriceData = await fetchBitcoinPrice();
+        const currentPrice = btcPriceData.usd.toLocaleString();
+        const change24h = btcPriceData.usd_24h_change;
+        const changePercentage = change24h.toFixed(2);
+
+        priceEl.textContent = `BTC Price: $${currentPrice} (24h: ${changePercentage}%)`;
+        if (change24h > 0) {
+          priceEl.classList.add('price-increase');
+        } else if (change24h < 0) {
+          priceEl.classList.add('price-decrease');
+        }
+
+        const transactions = await fetchTransactions();
+
+        const mappedTx = transactions.map(tx => {
+          const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
+          const hasKnownExchangeInInputs = tx.inputs.some(i => knownExchangeAddresses.includes(i.prev_out?.addr));
+          const hasKnownExchangeInOutputs = tx.out.some(o => knownExchangeAddresses.includes(o.addr));
+
+          let transactionLocation;
+          if (hasKnownExchangeInInputs && !hasKnownExchangeInOutputs) {
+            transactionLocation = 'Out of Exchange';
+          } else if (!hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
+            transactionLocation = 'Into Exchange';
+          } else if (hasKnownExchangeInInputs && hasKnownExchangeInOutputs) {
+            transactionLocation = 'Exchange Transfer';
+          } else {
+            transactionLocation = 'One-to-One Transfer';
+          }
+
+          return {
+            shortHash: tx.hash.substring(0, 10) + '...',
+            fullLink: `https://www.blockchain.com/btc/tx/${tx.hash}`,
+            btcAmount,
+            timestamp: new Date(tx.time * 1000).toLocaleString(),
+            transactionLocation,
+          };
+        }).sort((a, b) => b.btcAmount - a.btcAmount).slice(0, 10);
+
+        const topAmounts = mappedTx.map(tx => tx.btcAmount);
+        const maxAmount = Math.max(...topAmounts);
+        const minAmount = Math.min(...topAmounts);
+        const range = maxAmount - minAmount;
+
+        mappedTx.forEach((tx, idx) => {
+          let impactPhrase = 'Moderate impact on price.';
+          let impactClass = 'impact-moderate';
+          let impactReason = '';
+
+          const normalizedAmount = (tx.btcAmount - minAmount) / range;
+
+          if (normalizedAmount > 0.7) {
+            impactPhrase = 'Big impact compared to recent transactions.';
+            impactClass = 'impact-significant';
+            impactReason = 'This transaction is significantly larger than most of the other top transactions.';
+          } else if (normalizedAmount < 0.3) {
+            impactPhrase = 'Relatively small impact within the top transactions.';
+            impactReason = 'This transaction is on the lower end of the top 10 transactions by volume.';
+          }
+
+          tbodyEl.innerHTML += `<tr class="${impactClass}">
+            <td>${idx + 1}</td>
+            <td>${tx.btcAmount.toFixed(8)} BTC</td>
+            <td>${tx.timestamp}</td>
+            <td>${tx.transactionLocation}</td>
+            <td>${impactPhrase} <span style="font-size: 0.8em;">(${impactReason})</span></td>
+            <td><a target="_blank" href="${tx.fullLink}">${tx.shortHash}</a></td>
+          </tr>`;
+        });
+
+        loadingEl.style.display = 'none';
+        tableEl.style.display = 'table';
+      } catch (e) {
+        loadingEl.textContent = 'Error loading data.';
+        console.error(e);
+      }
+    });
+  </script>
+</body>
+</html>
