@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Information</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #007BFF;
+      padding-bottom: 5px;
+    }
+    hr {
+      border: none;
+      height: 1px;
+      background: #ddd;
+      margin: 15px 0;
+    }
+    .info-group {
+      padding: 10px;
+      border-left: 4px solid #007BFF;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+    }
+    .info-group h3 {
+      margin-top: 0;
+      color: #007BFF;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- System & Localization Information -->
+  <div class="container" id="systemInfo">
+    <h2>System & Localization Information</h2>
+    <hr>
+    <div class="info-group">
+      <h3>Basic Details</h3>
+      <p><strong>Browser:</strong> <span id="browser"></span></p>
+      <p><strong>Operating System:</strong> <span id="os"></span></p>
+      <p><strong>Screen Resolution:</strong> <span id="screen"></span></p>
+      <p><strong>Online Status:</strong> <span id="online"></span></p>
+    </div>
+    <hr>
+    <div class="info-group">
+      <h3>Localization</h3>
+      <p><strong>Primary Language:</strong> <span id="language"></span></p>
+      <p><strong>All Languages:</strong> <span id="allLanguages"></span></p>
+      <p><strong>Timezone:</strong> <span id="timezone"></span></p>
+    </div>
+  </div>
+
+  <!-- Geolocation Information -->
+  <div class="container" id="geoInfo">
+    <h2>Geolocation Information</h2>
+    <hr>
+    <div class="info-group" id="geoData">
+      <!-- Geolocation info will be inserted here -->
+    </div>
+    <div class="info-group" id="mapLink">
+      <h3>Map Link</h3>
+      <p><a id="mapURL" href="#" target="_blank">Open Map</a></p>
+    </div>
+  </div>
+
+  <!-- Device & Connectivity Information -->
+  <div class="container" id="deviceInfo">
+    <h2>Device & Connectivity Information</h2>
+    <hr>
+    <div class="info-group" id="batteryInfo">
+      <h3>Battery Information</h3>
+      <!-- Battery info will be inserted here -->
+    </div>
+    <hr>
+    <div class="info-group" id="networkInfo">
+      <h3>Network Information</h3>
+      <!-- Network info will be inserted here -->
+    </div>
+    <hr>
+    <div class="info-group" id="deviceDetails">
+      <h3>Device Information</h3>
+      <!-- Device info will be inserted here -->
+    </div>
+  </div>
+
+  <div style="text-align: center;">
+    <button type="button" onclick="window.location.href='index.html';">OK</button>
+  </div>
+
+  <script>
+    // Global variable to store the OS type for later use
+    let userOS = "Unknown";
+
+    // ---------------------------
+    // System & Localization Section
+    // ---------------------------
+    function getUserInfo() {
+      // Browser Information
+      document.getElementById("browser").textContent = navigator.userAgent;
+      
+      // OS Information (Extracted from userAgent)
+      let os = "Unknown";
+      if (navigator.userAgent.indexOf("Win") !== -1) os = "Windows";
+      if (navigator.userAgent.indexOf("Mac") !== -1) os = "MacOS";
+      if (navigator.userAgent.indexOf("Linux") !== -1) os = "Linux";
+      if (navigator.userAgent.indexOf("Android") !== -1) os = "Android";
+      if (navigator.userAgent.indexOf("like Mac") !== -1) os = "iOS";
+      userOS = os; // Save for later use in the map URL generation
+      document.getElementById("os").textContent = os;
+      
+      // Screen Resolution
+      document.getElementById("screen").textContent = window.screen.width + " x " + window.screen.height;
+      
+      // Online Status
+      document.getElementById("online").textContent = navigator.onLine ? "Online" : "Offline";
+      
+      // Localization Information
+      document.getElementById("language").textContent = navigator.language;
+      document.getElementById("allLanguages").textContent = navigator.languages.join(", ");
+      document.getElementById("timezone").textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+    getUserInfo();
+
+    // ---------------------------
+    // Geolocation Section
+    // ---------------------------
+    // Function to convert decimal degrees to degrees, minutes, seconds format
+    function convertToDMS(coordinate, isLat) {
+      const absolute = Math.abs(coordinate);
+      const degrees = Math.floor(absolute);
+      const minutes = Math.floor((absolute - degrees) * 60);
+      const seconds = (((absolute - degrees) * 60) - minutes) * 60;
+      const roundedSeconds = seconds.toFixed(2);
+      let direction = "";
+      if (isLat) {
+        direction = coordinate >= 0 ? "N" : "S";
+      } else {
+        direction = coordinate >= 0 ? "E" : "W";
+      }
+      return `${degrees}° ${minutes}' ${roundedSeconds}" ${direction}`;
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const accuracy = position.coords.accuracy;
+          
+          const latDMS = convertToDMS(lat, true);
+          const lonDMS = convertToDMS(lon, false);
+          
+          document.getElementById("geoData").innerHTML = `
+            <h3>Decimal Degrees</h3>
+            <p><strong>Latitude (decimal):</strong> ${lat}</p>
+            <p><strong>Longitude (decimal):</strong> ${lon}</p>
+            <p><strong>Accuracy:</strong> ${accuracy} meters</p>
+            <hr>
+            <h3>Degrees, Minutes, Seconds</h3>
+            <p><strong>Latitude (DMS):</strong> ${latDMS}</p>
+            <p><strong>Longitude (DMS):</strong> ${lonDMS}</p>
+            <p><strong>Accuracy:</strong> ${accuracy} meters</p>
+          `;
+
+          // Construct dynamic map URL based on OS and coordinates
+          let mapUrl = "";
+          const zoom = 15; // Default zoom level for Android
+
+          if (userOS === "iOS") {
+            mapUrl = `comgooglemaps://?q=${lat},${lon}`;
+          } else if (userOS === "Android") {
+            mapUrl = `geo:${lat},${lon}?z=${zoom}`;
+          } else {
+            // For Windows, MacOS, Linux, and unknown devices, use browser-based Google Maps
+            mapUrl = `http://maps.google.com/?q=${lat},${lon}`;
+          }
+          
+          // Update the map link anchor with the dynamic URL
+          const mapLink = document.getElementById("mapURL");
+          mapLink.href = mapUrl;
+          mapLink.textContent = "Open Map with your location";
+        },
+        function(error) {
+          document.getElementById("geoData").innerHTML = `<p>Error fetching geolocation: ${error.message}</p>`;
+        }
+      );
+    } else {
+      document.getElementById("geoData").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
+    }
+
+    // ---------------------------
+    // Device & Connectivity Section
+    // ---------------------------
+    // Battery Information
+    if (navigator.getBattery) {
+      navigator.getBattery().then(battery => {
+        document.getElementById("batteryInfo").innerHTML += `
+          <p><strong>Battery Level:</strong> ${(battery.level * 100).toFixed(0)}%</p>
+          <p><strong>Charging:</strong> ${battery.charging ? "Yes" : "No"}</p>
+        `;
+      });
+    } else {
+      document.getElementById("batteryInfo").innerHTML += `<p>Battery API is not supported on your browser.</p>`;
+    }
+
+    // Network Information
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection) {
+      document.getElementById("networkInfo").innerHTML += `
+        <p><strong>Effective Connection Type:</strong> ${connection.effectiveType}</p>
+        <p><strong>Downlink:</strong> ${connection.downlink} Mbps</p>
+        <p><strong>Round-trip Time:</strong> ${connection.rtt} ms</p>
+      `;
+    } else {
+      document.getElementById("networkInfo").innerHTML += `<p>Network Information API is not supported on your browser.</p>`;
+    }
+
+    // Device Memory and CPU Cores
+    if (navigator.deviceMemory && navigator.hardwareConcurrency) {
+      document.getElementById("deviceDetails").innerHTML += `
+        <p><strong>Device Memory:</strong> ${navigator.deviceMemory} GB</p>
+        <p><strong>CPU Cores:</strong> ${navigator.hardwareConcurrency}</p>
+      `;
+    } else {
+      document.getElementById("deviceDetails").innerHTML += `<p>Additional device info is not supported on your browser.</p>`;
+    }
+  </script>
+</body>
+</html>

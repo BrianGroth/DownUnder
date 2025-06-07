@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin Transaction Monitor</title>
+  <style>
+    :root {
+      --primary: #f7931a;
+      --primary-light: #fef2e0;
+      --success: #28a745;
+      --danger: #dc3545;
+      --dark: #343a40;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --white: #ffffff;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: var(--dark);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .proxy-select {
+      margin-right: 10px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    
+    .price-card, .news-card, .transactions-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--gray);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: var(--light);
+      position: sticky;
+      top: 0;
+    }
+    
+    tr:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .price-increase {
+      color: var(--success);
+    }
+    
+    .price-decrease {
+      color: var(--danger);
+    }
+    
+    .impact-high {
+      background-color: rgba(220, 53, 69, 0.1);
+      border-left: 4px solid var(--danger);
+    }
+    
+    .impact-medium {
+      background-color: rgba(255, 193, 7, 0.1);
+      border-left: 4px solid #ffc107;
+    }
+    
+    .impact-low {
+      background-color: rgba(40, 167, 69, 0.1);
+      border-left: 4px solid var(--success);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .badge-exchange {
+      background-color: #e1f5fe;
+      color: #0288d1;
+    }
+    
+    .badge-whale {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
+    
+    .badge-transfer {
+      background-color: #f3e5f5;
+      color: #7b1fa2;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: var(--gray);
+    }
+    
+    .refresh-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .refresh-button:hover {
+      background-color: #e78008;
+    }
+    
+    .timestamp {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    
+    .btc-amount {
+      font-weight: 600;
+    }
+    
+    .usd-value {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+    
+    .tx-link {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .tx-link:hover {
+      text-decoration: underline;
+    }
+    
+    .news-item {
+      margin-bottom: 15px;
+    }
+    
+    .news-item h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    
+    .news-item p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      table {
+        font-size: 0.85rem;
+      }
+      
+      th, td {
+        padding: 8px;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .hidden-mobile {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="BitcoinLogo.jpeg" alt="Bitcoin Logo" style="height: 40px; width: auto;">
+          <h1>Bitcoin Transaction Monitor</h1>
+        </div>
+        <div>
+          <!-- Dropdown for selecting CORS proxy -->
+          <select id="proxySelect" class="proxy-select">
+            <option value="https://thingproxy.freeboard.io/fetch/">Thingproxy</option>
+            <option value="https://api.allorigins.hexocode.repl.co/get?disableCache=true&url=">AllOrigins</option>
+            <option value="https://cors-anywhere.herokuapp.com/">CORS Anywhere</option>
+            <option value="" selected>No Proxy</option>
+          </select>
+          <button id="refreshBtn" class="refresh-button">Refresh Data</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="price-card">
+      <div id="btcPrice">Loading price data...</div>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3>Largest Transaction</h3>
+        <div id="largestTx" class="value">--</div>
+        <div id="largestTxUsd" class="usd-value">--</div>
+      </div>
+      <div class="stat-card">
+        <h3>Exchange Flows</h3>
+        <div id="exchangeFlow" class="value">--</div>
+        <div id="exchangeFlowDetails">--</div>
+      </div>
+      <div class="stat-card">
+        <h3>Mempool Transactions</h3>
+        <div id="txCount" class="value">--</div>
+        <div id="averageTxSize">--</div>
+      </div>
+      <div class="stat-card">
+        <h3>Bitcoin Supply</h3>
+        <div id="btcSupply" class="value">--</div>
+        <div id="btcSupplyDetails" class="usd-value">--</div>
+      </div>
+    </div>
+
+    <div class="transactions-card">
+      <h2>Significant Transactions</h2>
+      <div id="loading" class="loading">Loading transactions...</div>
+      <table id="transactionsTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>Amount</th>
+            <th>Time</th>
+            <th>Type</th>
+            <th class="hidden-mobile">Wallet Age</th>
+            <th>Market Impact</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="news-card">
+      <h2>Latest Bitcoin News</h2>
+      <div id="newsLoading" class="loading">Loading news...</div>
+      <div id="newsContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    // Extended list of known exchange addresses
+    const exchangeData = {
+      "Binance": [
+        "3FkenCiXpSLqD8L79intRNXUgjRoH9sjXa",
+        "1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s"
+      ],
+      "Coinbase": [
+        "bc1qgd82lly7g36stxeqg05kvrfypnkgxhhgyy84yl",
+        "35hK24tcLEWcgNA4JxpvbkNkoAcDGqQPsP"
+      ],
+      "Kraken": [
+        "1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ",
+        "bc1qp24hqz45yuhaqcsvfpvf7h05hhzuwy7cu9qk2f"
+      ],
+      "Bitfinex": [
+        "3D2oetdNuZUqQHPJmcMDDHYoqkyNVsFk9r",
+        "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
+      ]
+    };
+
+    // Flatten exchange addresses for easier lookup
+    const allExchangeAddresses = Object.values(exchangeData).flat();
+    
+    // Threshold values for determining impact (in BTC)
+    const WHALE_THRESHOLD = 100; // BTC
+    const HIGH_IMPACT_THRESHOLD = 500; // BTC
+    const MEDIUM_IMPACT_THRESHOLD = 100; // BTC
+
+    // Helper: Get selected proxy from dropdown
+    function getSelectedProxy() {
+      return document.getElementById('proxySelect').value;
+    }
+
+    // Fetch Bitcoin market data (including USD & EUR price and circulating supply)
+    async function fetchBitcoinMarketData() {
+      try {
+        const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false');
+        const data = await res.json();
+        return {
+          price: data.market_data.current_price.usd,
+          eurPrice: data.market_data.current_price.eur,
+          priceChange24h: data.market_data.price_change_percentage_24h,
+          marketCap: data.market_data.market_cap.usd,
+          volume24h: data.market_data.total_volume.usd,
+          circulatingSupply: data.market_data.circulating_supply
+        };
+      } catch (error) {
+        console.error('Error fetching Bitcoin market data:', error);
+        return null;
+      }
+    }
+
+    // Fetch unconfirmed transactions using the selected CORS proxy
+    async function fetchTransactions() {
+      try {
+        const proxyUrl = getSelectedProxy();
+        const targetUrl = 'https://blockchain.info/unconfirmed-transactions?format=json';
+        const res = await fetch((proxyUrl ? proxyUrl : "") + targetUrl);
+        const data = await res.json();
+        return data.txs;
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        return [];
+      }
+    }
+
+    // Fetch Bitcoin news articles using a free news API (CryptoCompare)
+    async function fetchBitcoinNews() {
+      try {
+        const res = await fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN');
+        const data = await res.json();
+        return data.Data; // Array of news articles
+      } catch (error) {
+        console.error('Error fetching Bitcoin news:', error);
+        return [];
+      }
+    }
+
+    // Update the UI with market and transaction data
+    function updateUI(transactions, marketData) {
+      const btcPriceEl = document.getElementById('btcPrice');
+      const loadingEl = document.getElementById('loading');
+      const tableEl = document.getElementById('transactionsTable');
+      const tbodyEl = tableEl.querySelector('tbody');
+      const largestTxEl = document.getElementById('largestTx');
+      const largestTxUsdEl = document.getElementById('largestTxUsd');
+      const exchangeFlowEl = document.getElementById('exchangeFlow');
+      const exchangeFlowDetailsEl = document.getElementById('exchangeFlowDetails');
+      const txCountEl = document.getElementById('txCount');
+      const averageTxSizeEl = document.getElementById('averageTxSize');
+      const btcSupplyEl = document.getElementById('btcSupply');
+      const btcSupplyDetailsEl = document.getElementById('btcSupplyDetails');
+      
+      tbodyEl.innerHTML = '';
+      const now = new Date();
+
+      // Update BTC price display with both USD and EUR along with a timestamp
+      if (marketData) {
+        const formattedPriceUSD = marketData.price.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        const formattedPriceEUR = marketData.eurPrice.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        const priceChangeClass = marketData.priceChange24h >= 0 ? 'price-increase' : 'price-decrease';
+        const priceChangeSign = marketData.priceChange24h >= 0 ? '+' : '';
+        btcPriceEl.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 2rem; font-weight: bold;">
+              $${formattedPriceUSD} (USD) | &euro;${formattedPriceEUR} (EUR)
+            </span>
+            <span class="${priceChangeClass}" style="font-size: 1.2rem; font-weight: 500;">
+              ${priceChangeSign}${marketData.priceChange24h.toFixed(2)}%
+            </span>
+          </div>
+          <div style="font-size: 0.9rem; color: var(--gray); margin-top: 5px;">
+            Market Cap: $${(marketData.marketCap / 1e9).toFixed(2)} billion | 
+            24h Volume: $${(marketData.volume24h / 1e9).toFixed(2)} billion
+          </div>
+          <div class="timestamp">Updated: ${now.toLocaleString()}</div>
+        `;
+      } else {
+        btcPriceEl.textContent = 'Unable to load price data';
+      }
+      
+      if (transactions.length === 0) {
+        loadingEl.textContent = 'No transactions found';
+        return;
+      }
+      
+      // Analyze and sort transactions
+      const analyzedTransactions = transactions.map(tx => 
+        analyzeTransaction(tx, marketData ? marketData.price : 65000)
+      ).sort((a, b) => b.btcAmount - a.btcAmount);
+      
+      // Filter for significant transactions (e.g., ≥ 10 BTC) and take top 10
+      const significantTransactions = analyzedTransactions
+        .filter(tx => tx.btcAmount >= 10)
+        .slice(0, 10);
+      
+      // Update statistics if available
+      if (significantTransactions.length > 0) {
+        const largest = significantTransactions[0];
+        largestTxEl.textContent = `${largest.btcAmount.toFixed(2)} BTC`;
+        largestTxUsdEl.textContent = `$${largest.usdValue.toLocaleString()}`;
+        
+        // Calculate exchange flows
+        const exchangeTransactions = analyzedTransactions.filter(tx => tx.involvedExchanges.length > 0);
+        const inflows = exchangeTransactions
+          .filter(tx => tx.transactionType.includes('Deposit'))
+          .reduce((sum, tx) => sum + tx.btcAmount, 0);
+        const outflows = exchangeTransactions
+          .filter(tx => tx.transactionType.includes('Withdrawal'))
+          .reduce((sum, tx) => sum + tx.btcAmount, 0);
+        const netFlow = inflows - outflows;
+        const netFlowClass = netFlow >= 0 ? 'price-increase' : 'price-decrease';
+        const netFlowSign = netFlow >= 0 ? '+' : '';
+        exchangeFlowEl.innerHTML = `<span class="${netFlowClass}">${netFlowSign}${Math.abs(netFlow).toFixed(2)} BTC</span>`;
+        exchangeFlowDetailsEl.innerHTML = `In: ${inflows.toFixed(2)} BTC | Out: ${outflows.toFixed(2)} BTC`;
+        
+        txCountEl.textContent = transactions.length.toString();
+        const totalBtc = analyzedTransactions.reduce((sum, tx) => sum + tx.btcAmount, 0);
+        const avgTxSize = totalBtc / transactions.length;
+        averageTxSizeEl.textContent = `Avg. size: ${avgTxSize.toFixed(2)} BTC`;
+      }
+      
+      // Update Bitcoin Supply stat (using a total cap of 21,000,000 BTC)
+      if (marketData && marketData.circulatingSupply) {
+        const totalSupply = 21000000;
+        const circulating = marketData.circulatingSupply;
+        const percentMined = ((circulating / totalSupply) * 100).toFixed(2);
+        const remainingBTC = totalSupply - circulating;
+        const remainingSatoshis = Math.round(remainingBTC * 1e8);
+        btcSupplyEl.textContent = `${percentMined}% mined`;
+        btcSupplyDetailsEl.textContent = `Remaining: ${remainingSatoshis.toLocaleString()} satoshis`;
+      }
+      
+      // Populate transaction table
+      significantTransactions.forEach(tx => {
+        const row = document.createElement('tr');
+        row.className = tx.impactClass;
+        const timeAgo = getTimeAgo(tx.timestamp);
+        row.innerHTML = `
+          <td>
+            <div class="btc-amount">${tx.btcAmount.toFixed(4)} BTC</div>
+            <div class="usd-value">$${tx.usdValue.toLocaleString()}</div>
+          </td>
+          <td>
+            <div>${timeAgo}</div>
+            <div class="timestamp">${tx.timestamp.toLocaleString()}</div>
+          </td>
+          <td><span class="badge ${tx.transactionBadge}">${tx.transactionType}</span></td>
+          <td class="hidden-mobile">${tx.walletAge}</td>
+          <td>
+            <div>${tx.marketImpact}</div>
+            <div style="font-size: 0.8rem; color: var(--gray);">${tx.impactDetail}</div>
+          </td>
+          <td>
+            <a href="https://www.blockchain.com/btc/tx/${tx.txHash}" target="_blank" class="tx-link">
+              ${tx.txHash.substring(0, 8)}...
+            </a>
+          </td>
+        `;
+        tbodyEl.appendChild(row);
+      });
+      
+      loadingEl.style.display = 'none';
+      tableEl.style.display = 'table';
+    }
+
+    // Update the UI with news articles
+    function updateNewsUI(articles) {
+      const newsContainer = document.getElementById('newsContainer');
+      const newsLoading = document.getElementById('newsLoading');
+      newsContainer.innerHTML = '';
+      if (articles.length === 0) {
+        newsLoading.textContent = 'No news articles found';
+        return;
+      }
+      articles.slice(0, 5).forEach(article => {
+        const newsDiv = document.createElement('div');
+        newsDiv.className = 'news-item';
+        newsDiv.innerHTML = `
+          <h3><a href="${article.url}" target="_blank">${article.title}</a></h3>
+          <p>${new Date(article.published_on * 1000).toLocaleString()}</p>
+          <p>${article.body.substring(0, 150)}...</p>
+        `;
+        newsContainer.appendChild(newsDiv);
+      });
+      newsLoading.style.display = 'none';
+    }
+
+    // Function to identify wallet age based on transaction history (simulated)
+    function identifyWalletAge(inputs) {
+      const ages = ['New (<1 month)', '1-3 months', '3-12 months', '1-3 years', '3+ years'];
+      return ages[Math.floor(Math.random() * ages.length)];
+    }
+
+    // Determine transaction type and significance
+    function analyzeTransaction(tx, btcPrice) {
+      // Calculate total BTC amount (values in satoshis)
+      const btcAmount = tx.out.reduce((sum, o) => sum + o.value, 0) / 1e8;
+      
+      // Identify addresses involved
+      const inputAddresses = tx.inputs
+        .filter(i => i.prev_out && i.prev_out.addr)
+        .map(i => i.prev_out.addr);
+      
+      const outputAddresses = tx.out
+        .filter(o => o.addr)
+        .map(o => o.addr);
+      
+      // Check if exchange addresses are involved
+      const involvedExchanges = new Set();
+      for (const [exchange, addresses] of Object.entries(exchangeData)) {
+        const inputMatches = inputAddresses.some(addr => addresses.includes(addr));
+        const outputMatches = outputAddresses.some(addr => addresses.includes(addr));
+        if (inputMatches || outputMatches) {
+          involvedExchanges.add(exchange);
+        }
+      }
+      
+      // Determine transaction type
+      let transactionType = 'Wallet Transfer';
+      let transactionBadge = 'badge-transfer';
+      if (involvedExchanges.size > 0) {
+        const exchangesList = Array.from(involvedExchanges).join(', ');
+        const inputExchange = inputAddresses.some(addr => allExchangeAddresses.includes(addr));
+        const outputExchange = outputAddresses.some(addr => allExchangeAddresses.includes(addr));
+        if (inputExchange && !outputExchange) {
+          transactionType = `Withdrawal from ${exchangesList}`;
+          transactionBadge = 'badge-exchange';
+        } else if (!inputExchange && outputExchange) {
+          transactionType = `Deposit to ${exchangesList}`;
+          transactionBadge = 'badge-exchange';
+        } else if (inputExchange && outputExchange) {
+          transactionType = `${exchangesList} Internal Transfer`;
+          transactionBadge = 'badge-exchange';
+        }
+      } else if (btcAmount >= WHALE_THRESHOLD) {
+        transactionType = 'Whale Transfer';
+        transactionBadge = 'badge-whale';
+      }
+      
+      // Determine market impact
+      let marketImpact = 'Low impact';
+      let impactClass = 'impact-low';
+      let impactDetail = 'Unlikely to affect market price.';
+      const usdValue = btcAmount * btcPrice;
+      if (btcAmount >= HIGH_IMPACT_THRESHOLD) {
+        marketImpact = 'High impact';
+        impactClass = 'impact-high';
+        impactDetail = `Large transaction of ${btcAmount.toFixed(2)} BTC ($${usdValue.toLocaleString()}) could influence market.`;
+      } else if (btcAmount >= MEDIUM_IMPACT_THRESHOLD) {
+        marketImpact = 'Medium impact';
+        impactClass = 'impact-medium';
+        impactDetail = `Significant movement of ${btcAmount.toFixed(2)} BTC could affect short-term price.`;
+      }
+      
+      // Analyze wallet age (simulated)
+      const walletAge = identifyWalletAge(tx.inputs);
+      
+      return {
+        txHash: tx.hash,
+        btcAmount,
+        usdValue,
+        timestamp: new Date(tx.time * 1000),
+        transactionType,
+        transactionBadge,
+        walletAge,
+        marketImpact,
+        impactDetail,
+        impactClass,
+        involvedExchanges: Array.from(involvedExchanges)
+      };
+    }
+
+    // Helper function to display relative time
+    function getTimeAgo(timestamp) {
+      const seconds = Math.floor((new Date() - timestamp) / 1000);
+      if (seconds < 60) return `${seconds} seconds ago`;
+      if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+      if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+      return `${Math.floor(seconds / 86400)} days ago`;
+    }
+
+    // Function to load all data (market, transactions, and news)
+    async function loadData() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('loading').textContent = 'Loading transactions...';
+      document.getElementById('transactionsTable').style.display = 'none';
+      
+      try {
+        const [marketData, transactions, newsArticles] = await Promise.all([
+          fetchBitcoinMarketData(),
+          fetchTransactions(),
+          fetchBitcoinNews()
+        ]);
+        updateUI(transactions, marketData);
+        updateNewsUI(newsArticles);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('loading').textContent = 'Error loading data. Please try again.';
+        document.getElementById('newsLoading').textContent = 'Error loading news.';
+      }
+    }
+
+    // Initialize the page and set up refresh button handler
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      document.getElementById('refreshBtn').addEventListener('click', loadData);
+    });
+  </script>
+</body>
+</html>
